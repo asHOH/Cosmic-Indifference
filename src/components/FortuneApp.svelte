@@ -54,12 +54,10 @@
       class="z-10 flex flex-col items-center justify-center space-y-8"
       transition:fade={{ duration: 800 }}
     >
-      <h1 class="text-4xl font-bold tracking-widest">今日运势</h1>
+      <h1 class="text-5xl font-bold tracking-widest">今日运势</h1>
 
       <div class="h-32 flex items-center justify-center text-6xl font-light">
-        {#if state === "Idle"}
-          <span class="opacity-50 text-xl">点击下方按钮</span>
-        {:else if state === "Rolling" || state === "Revealed"}
+        {#if state === "Rolling" || state === "Revealed"}
           <span class="tracking-widest">{currentFortune}</span>
         {/if}
       </div>
