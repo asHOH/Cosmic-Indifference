@@ -9,13 +9,14 @@
 
   let iframeElement: HTMLIFrameElement;
   let videoSrc =
-    "//player.bilibili.com/player.html?bvid=BV19X9eBpEfS&page=1&high_quality=1&danmaku=0";
+    "//player.bilibili.com/player.html?bvid=BV19X9eBpEfS&page=1&t=0.1&danmaku=0";
+  let showVideo = false;
 
   function rollFortune() {
     state = "Rolling";
     // Start autoplay attempt because user just interacted
     videoSrc =
-      "//player.bilibili.com/player.html?bvid=BV19X9eBpEfS&page=1&high_quality=1&danmaku=0&autoplay=1";
+      "//player.bilibili.com/player.html?bvid=BV19X9eBpEfS&page=1&t=0.1&danmaku=0&autoplay=1";
 
     // Fake rolling animation
     let rollTarget = 20;
@@ -35,10 +36,14 @@
   function startVideoTransition() {
     setTimeout(() => {
       state = "VideoTransitioning";
-      if (iframeElement && iframeElement.contentWindow) {
-        // Try the postMessage API
-        iframeElement.contentWindow.postMessage("play", "*");
-      }
+      // Bilibili's player.html does NOT expose a native postMessage API to parent windows.
+      // Playback and parameters must all be controlled via the URL attributes (like &t=0.1&autoplay=1).
+      // Since the user clicked a button beforehand, the browser will allow this iframe to autoplay.
+
+      // Wait 3 seconds before showing the video
+      setTimeout(() => {
+        showVideo = true;
+      }, 3000);
     }, 1500); // 1.5 seconds to read
   }
 </script>
@@ -74,12 +79,12 @@
   <iframe
     bind:this={iframeElement}
     src={videoSrc}
-    class="absolute top-0 left-0 w-full h-full border-none transition-opacity duration-1000"
-    style="opacity: {state === 'VideoTransitioning'
-      ? '1'
-      : '0'}; pointer-events: {state === 'VideoTransitioning'
+    // sandbox="allow-top-navigation allow-scripts allow-forms allow-popups allow-presentation allow-same-origin"
+    // tried this but it does not work
+    class="absolute top-0 left-0 w-full h-full border-none transition-opacity duration-3000 ease-in"
+    style="opacity: {showVideo ? '1' : '0'}; pointer-events: {showVideo
       ? 'auto'
-      : 'none'}; z-index: {state === 'VideoTransitioning' ? '20' : '-10'};"
+      : 'none'}; z-index: {showVideo ? '20' : '-10'};"
     allow="autoplay; fullscreen"
     title="宇宙冷漠"
   ></iframe>
