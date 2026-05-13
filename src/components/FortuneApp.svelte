@@ -6,12 +6,13 @@
 
   const fortunes = ["大吉", "吉", "中吉", "小吉", "末吉", "凶", "大凶"];
   let currentFortune = "";
-
-  const videoSrc =
-    "//player.bilibili.com/player.html?bvid=BV19X9eBpEfS&page=1&t=0.1&danmaku=0&autoplay=1";
+  let videoEl: HTMLVideoElement;
 
   function rollFortune() {
     state = "Rolling";
+    if (videoEl) {
+      videoEl.play().catch(e => console.error("Video play failed:", e));
+    }
 
     // Fake rolling animation
     let rollTarget = 20;
@@ -62,21 +63,23 @@
   {/if}
 
   <!--
-    Bilibili Player
-    Mounted immediately on click.
+    Local Video Player
+    Mounted immediately, preloaded in background.
     Kept invisible until state === 'VideoPlaying'.
   -->
-  {#if state !== "Idle"}
-    <iframe
-      src={videoSrc}
-      class="absolute top-0 left-0 w-full h-full border-none transition-opacity duration-5000 ease-in"
-      style="opacity: {state === 'VideoPlaying'
-        ? '1'
-        : '0'}; pointer-events: {state === 'VideoPlaying'
-        ? 'auto'
-        : 'none'}; z-index: 10;"
-      allow="autoplay; fullscreen; encrypted-media"
-      title="宇宙冷漠"
-    ></iframe>
-  {/if}
+  <video
+    bind:this={videoEl}
+    id="fortune-video"
+    src="/yuzhoulengmo_360p.mp4"
+    preload="auto"
+    playsinline
+    class="absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000 ease-in"
+    style="opacity: {state === 'VideoPlaying'
+      ? '1'
+      : '0'}; pointer-events: {state === 'VideoPlaying'
+      ? 'auto'
+      : 'none'}; z-index: 10;"
+  >
+    <track kind="captions" />
+  </video>
 </main>
