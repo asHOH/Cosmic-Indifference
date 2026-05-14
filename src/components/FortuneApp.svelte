@@ -79,14 +79,26 @@
     }
   }
 
-  function handleTimeUpdate() {
-    if (!videoEl || !videoVisible) return;
-    if (
-      videoEl.duration - videoEl.currentTime <=
-      TIMING.VIDEO_FADE_OUT_MS / 1000
-    ) {
+  let fadeOutTimer: ReturnType<typeof setTimeout>;
+
+  function scheduleFadeOut() {
+    clearTimeout(fadeOutTimer);
+    if (!videoEl || Number.isNaN(videoEl.duration)) return;
+
+    const remainingMs = (videoEl.duration - videoEl.currentTime) * 1000;
+    const delayUntilFade = remainingMs - TIMING.VIDEO_FADE_OUT_MS;
+
+    if (delayUntilFade > 0) {
+      fadeOutTimer = setTimeout(() => {
+        videoVisible = false;
+      }, delayUntilFade);
+    } else {
       videoVisible = false;
     }
+  }
+
+  function clearFadeOut() {
+    clearTimeout(fadeOutTimer);
   }
 
   async function handleVideoEnded() {
@@ -144,7 +156,8 @@
     preload="auto"
     playsinline
     on:click={togglePlay}
-    on:timeupdate={handleTimeUpdate}
+    on:play={scheduleFadeOut}
+    on:pause={clearFadeOut}
     on:ended={handleVideoEnded}
     class="absolute top-0 left-0 w-full h-full object-cover transition-opacity ease-in cursor-pointer z-10"
     style:opacity={videoVisible ? "1" : "0"}
