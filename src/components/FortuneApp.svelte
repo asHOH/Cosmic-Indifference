@@ -32,6 +32,15 @@
       }
     }, 50);
   }
+
+  function togglePlay() {
+    if (!videoEl || state !== "VideoPlaying") return;
+    if (videoEl.paused) {
+      videoEl.play();
+    } else {
+      videoEl.pause();
+    }
+  }
 </script>
 
 <main
@@ -73,7 +82,8 @@
     src="/yuzhoulengmo_360p.mp4"
     preload="auto"
     playsinline
-    class="absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000 ease-in"
+    on:click={togglePlay}
+    class="absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000 ease-in cursor-pointer"
     style="opacity: {state === 'VideoPlaying'
       ? '1'
       : '0'}; pointer-events: {state === 'VideoPlaying'
