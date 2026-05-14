@@ -53,7 +53,7 @@
       class="z-20 flex flex-col items-center justify-center space-y-8 absolute"
       transition:fade={{ duration: 800 }}
     >
-      <h1 class="text-5xl font-bold tracking-widest">今日运势</h1>
+      <h1 class="text-5xl font-bold tracking-widest text-[#95cdfe]">今日运势</h1>
 
       <div class="h-32 flex items-center justify-center text-6xl font-light">
         {#if state === "Rolling" || state === "Revealed"}
