@@ -1,5 +1,6 @@
 <script lang="ts">
   import { fade } from "svelte/transition";
+  import RollButton from "./RollButton.svelte";
 
   type State = "Idle" | "Rolling" | "Revealed" | "VideoPlaying";
   let state: State = "Idle";
@@ -11,7 +12,7 @@
   function rollFortune() {
     state = "Rolling";
     if (videoEl) {
-      videoEl.play().catch(e => console.error("Video play failed:", e));
+      videoEl.play().catch((e) => console.error("Video play failed:", e));
     }
 
     // Fake rolling animation
@@ -60,14 +61,15 @@
         {/if}
       </div>
 
-      {#if state === "Idle"}
-        <button
-          on:click={rollFortune}
-          class="px-8 py-3 border border-white hover:bg-white hover:text-black transition-colors duration-300 rounded-sm uppercase tracking-widest cursor-pointer"
-        >
-          抽取
-        </button>
-      {/if}
+      <RollButton
+        on:click={rollFortune}
+        class={state !== "Idle"
+          ? "opacity-0 pointer-events-none"
+          : "opacity-100"}
+        disabled={state !== "Idle"}
+      >
+        抽取
+      </RollButton>
     </div>
   {/if}
 
