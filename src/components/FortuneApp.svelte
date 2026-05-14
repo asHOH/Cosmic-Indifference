@@ -93,10 +93,8 @@
     // Wait for 4s (Reveal + UI Fade out) before playing again
     await delay(TIMING.REVEAL_DURATION_MS + TIMING.UI_FADE_OUT_MS);
 
-    if (videoEl) {
-      videoEl.currentTime = 0;
-      safePlay();
-    }
+    videoEl && (videoEl.currentTime = 0);
+    safePlay();
 
     // Keep screen black for another 3s, then start fade in
     await delay(TIMING.BLACK_DELAY_MS);
@@ -148,12 +146,12 @@
     on:click={togglePlay}
     on:timeupdate={handleTimeUpdate}
     on:ended={handleVideoEnded}
-    class="absolute top-0 left-0 w-full h-full object-cover transition-opacity ease-in cursor-pointer"
-    style="opacity: {videoVisible ? '1' : '0'}; pointer-events: {videoVisible
-      ? 'auto'
-      : 'none'}; transition-duration: {videoVisible
+    class="absolute top-0 left-0 w-full h-full object-cover transition-opacity ease-in cursor-pointer z-10"
+    style:opacity={videoVisible ? "1" : "0"}
+    style:pointer-events={videoVisible ? "auto" : "none"}
+    style:transition-duration="{videoVisible
       ? TIMING.VIDEO_FADE_IN_MS
-      : TIMING.VIDEO_FADE_OUT_MS}ms; z-index: 10;"
+      : TIMING.VIDEO_FADE_OUT_MS}ms"
   >
     <!-- Browser tries WebM first -->
     <source src="/yuzhoulengmo_360p.webm" type="video/webm" />
