@@ -79,7 +79,6 @@
   <video
     bind:this={videoEl}
     id="fortune-video"
-    src="/yuzhoulengmo_360p.webm"
     preload="auto"
     playsinline
     on:click={togglePlay}
@@ -90,6 +89,10 @@
       ? 'auto'
       : 'none'}; z-index: 10;"
   >
+    <!-- Browser tries WebM first -->
+    <source src="/yuzhoulengmo_360p.webm" type="video/webm" />
+    <!-- Fallback to MP4 if WebM is not supported -->
+    <source src="/yuzhoulengmo_360p.mp4" type="video/mp4" />
     <track kind="captions" />
   </video>
 </main>
