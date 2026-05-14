@@ -21,17 +21,27 @@
   let videoEl: HTMLVideoElement;
   let videoVisible = false;
 
+  // centralized play handler
+  async function safePlay(isPrewarm = false) {
+    if (!videoEl) return;
+    try {
+      await videoEl.play();
+      if (isPrewarm) {
+        videoEl.pause();
+        videoEl.currentTime = 0;
+      }
+    } catch (error: any) {
+      if (error.name === "AbortError") {
+        // Expected if pause() is called before play() finishes. Safe to ignore.
+        return;
+      }
+      console.warn("Playback failed:", error.name, error.message);
+    }
+  }
+
   function rollFortune() {
     state = "Rolling";
-    if (videoEl) {
-      videoEl
-        .play()
-        .then(() => {
-          videoEl.pause();
-          videoEl.currentTime = 0;
-        })
-        .catch((e) => console.error("Video play failed:", e));
-    }
+    safePlay(true); // Prewarm the video engine
 
     // Fake rolling animation
     let currentRoll = 0;
@@ -51,9 +61,7 @@
           setTimeout(() => {
             if (videoEl) {
               videoEl.currentTime = 0;
-              videoEl
-                .play()
-                .catch((e) => console.error("Video play failed:", e));
+              safePlay();
             }
 
             // Stay black before video fading in
@@ -90,7 +98,7 @@
     setTimeout(() => {
       if (videoEl) {
         videoEl.currentTime = 0;
-        videoEl.play().catch((e) => console.error("Video play failed:", e));
+        safePlay();
       }
       // Keep screen black for another 3s, then start fade in
       setTimeout(() => {
