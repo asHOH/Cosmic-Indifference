@@ -79,7 +79,7 @@
   <video
     bind:this={videoEl}
     id="fortune-video"
-    src="/yuzhoulengmo_360p.mp4"
+    src="/yuzhoulengmo_360p.webm"
     preload="auto"
     playsinline
     on:click={togglePlay}
