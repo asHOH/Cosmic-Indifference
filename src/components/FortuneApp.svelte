@@ -153,8 +153,7 @@
     on:timeupdate={handleTimeUpdate}
     on:ended={handleVideoEnded}
     class="absolute top-0 left-0 w-full h-full object-cover transition-opacity ease-in cursor-pointer"
-    style="opacity: {videoVisible ? '1' : '0'}; pointer-events: {state ===
-    'VideoPlaying'
+    style="opacity: {videoVisible ? '1' : '0'}; pointer-events: {videoVisible
       ? 'auto'
       : 'none'}; transition-duration: {videoVisible
       ? TIMING.VIDEO_FADE_IN_MS
