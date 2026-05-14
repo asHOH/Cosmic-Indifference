@@ -10,6 +10,7 @@
     UI_FADE_OUT_MS: 1000, // UI fade-out duration; video starts after this
     BLACK_DELAY_MS: 3000, // Delay before video starts to fade in
     VIDEO_FADE_IN_MS: 1000, // Video fade-in duration
+    VIDEO_FADE_OUT_MS: 1000, // Video fade-out duration at the end
   };
 
   type State = "Idle" | "Rolling" | "Revealed" | "VideoPlaying";
@@ -73,6 +74,30 @@
       videoEl.pause();
     }
   }
+
+  function handleTimeUpdate() {
+    if (!videoEl || !videoVisible) return;
+    if (
+      videoEl.duration - videoEl.currentTime <=
+      TIMING.VIDEO_FADE_OUT_MS / 1000
+    ) {
+      videoVisible = false;
+    }
+  }
+
+  function handleVideoEnded() {
+    // Wait for 4s (Reveal + UI Fade out) before playing again
+    setTimeout(() => {
+      if (videoEl) {
+        videoEl.currentTime = 0;
+        videoEl.play().catch((e) => console.error("Video play failed:", e));
+      }
+      // Keep screen black for another 3s, then start fade in
+      setTimeout(() => {
+        videoVisible = true;
+      }, TIMING.BLACK_DELAY_MS);
+    }, TIMING.REVEAL_DURATION_MS + TIMING.UI_FADE_OUT_MS);
+  }
 </script>
 
 <main
@@ -117,11 +142,15 @@
     preload="auto"
     playsinline
     on:click={togglePlay}
+    on:timeupdate={handleTimeUpdate}
+    on:ended={handleVideoEnded}
     class="absolute top-0 left-0 w-full h-full object-cover transition-opacity ease-in cursor-pointer"
     style="opacity: {videoVisible ? '1' : '0'}; pointer-events: {state ===
     'VideoPlaying'
       ? 'auto'
-      : 'none'}; transition-duration: {TIMING.VIDEO_FADE_IN_MS}ms; z-index: 10;"
+      : 'none'}; transition-duration: {videoVisible
+      ? TIMING.VIDEO_FADE_IN_MS
+      : TIMING.VIDEO_FADE_OUT_MS}ms; z-index: 10;"
   >
     <!-- Browser tries WebM first -->
     <source src="/yuzhoulengmo_360p.webm" type="video/webm" />
