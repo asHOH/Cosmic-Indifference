@@ -39,39 +39,35 @@
     }
   }
 
-  function rollFortune() {
+  const delay = (ms: number) =>
+    new Promise((resolve) => setTimeout(resolve, ms));
+
+  async function rollFortune() {
     state = "Rolling";
     safePlay(true); // Prewarm the video engine
 
     // Fake rolling animation
-    let currentRoll = 0;
-
-    const interval = setInterval(() => {
+    for (let i = 0; i < TIMING.ROLL_ITERATIONS; i++) {
       currentFortune = fortunes[Math.floor(Math.random() * fortunes.length)];
-      currentRoll++;
-      if (currentRoll >= TIMING.ROLL_ITERATIONS) {
-        clearInterval(interval);
-        state = "Revealed";
+      await delay(TIMING.ROLL_INTERVAL_MS);
+    }
 
-        // Wait for user to read the fortune
-        setTimeout(() => {
-          state = "VideoPlaying";
+    state = "Revealed";
 
-          // Wait for UI to fade out
-          setTimeout(() => {
-            if (videoEl) {
-              videoEl.currentTime = 0;
-              safePlay();
-            }
+    // Wait for user to read the fortune
+    await delay(TIMING.REVEAL_DURATION_MS);
 
-            // Stay black before video fading in
-            setTimeout(() => {
-              videoVisible = true;
-            }, TIMING.BLACK_DELAY_MS);
-          }, TIMING.UI_FADE_OUT_MS);
-        }, TIMING.REVEAL_DURATION_MS);
-      }
-    }, TIMING.ROLL_INTERVAL_MS);
+    state = "VideoPlaying";
+
+    // Wait for UI to fade out
+    await delay(TIMING.UI_FADE_OUT_MS);
+
+    videoEl && (videoEl.currentTime = 0);
+    safePlay();
+
+    // Stay black before video fading in
+    await delay(TIMING.BLACK_DELAY_MS);
+    videoVisible = true;
   }
 
   function togglePlay() {
@@ -93,18 +89,18 @@
     }
   }
 
-  function handleVideoEnded() {
+  async function handleVideoEnded() {
     // Wait for 4s (Reveal + UI Fade out) before playing again
-    setTimeout(() => {
-      if (videoEl) {
-        videoEl.currentTime = 0;
-        safePlay();
-      }
-      // Keep screen black for another 3s, then start fade in
-      setTimeout(() => {
-        videoVisible = true;
-      }, TIMING.BLACK_DELAY_MS);
-    }, TIMING.REVEAL_DURATION_MS + TIMING.UI_FADE_OUT_MS);
+    await delay(TIMING.REVEAL_DURATION_MS + TIMING.UI_FADE_OUT_MS);
+
+    if (videoEl) {
+      videoEl.currentTime = 0;
+      safePlay();
+    }
+
+    // Keep screen black for another 3s, then start fade in
+    await delay(TIMING.BLACK_DELAY_MS);
+    videoVisible = true;
   }
 </script>
 
