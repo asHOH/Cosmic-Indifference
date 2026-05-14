@@ -16,8 +16,8 @@
   type State = "Idle" | "Rolling" | "Revealed" | "VideoPlaying";
   let state: State = "Idle";
 
-  const fortunes = ["大吉", "吉", "中吉", "小吉", "末吉", "凶", "大凶"];
-  let currentFortune = "";
+  import { fortunes, type Fortune } from "../data/fortunes";
+  let currentFortune: Fortune | null = null;
   let videoEl: HTMLVideoElement;
   let videoVisible = false;
 
@@ -128,8 +128,8 @@
       </h1>
 
       <div class="h-32 flex items-center justify-center text-6xl font-light">
-        {#if state === "Rolling" || state === "Revealed"}
-          <span class="tracking-widest">{currentFortune}</span>
+        {#if (state === "Rolling" || state === "Revealed") && currentFortune}
+          <span class="tracking-widest" style="color: {currentFortune.color}">{currentFortune.text}</span>
         {/if}
       </div>
 
