@@ -40,6 +40,15 @@ jobs:
           REGION: ${{ secrets.TENCENT_COS_REGION }}
         run: |
           coscmd config -a $SECRET_ID -s $SECRET_KEY -b $BUCKET -r $REGION
-          # Upload the dist directory to the root of the COS bucket.
-          # -r: recursive, -s: sync (skip identical files), -f: force overwrite, --delete: delete files in COS that are not in local dist
-          coscmd upload -rsf --delete dist/ /
+
+          # 1. Sync everything (HTML, etc.) and delete removed files. Default to no-cache.
+          coscmd upload -rsf --delete -H "{'Cache-Control': 'no-cache'}" dist/ /
+
+          # 2. Specifically update the video files with a long cache (1 year)
+          # -rs skips identical files by hash, but since we want to ensure headers, 
+          # we can just run upload targeting the files directly to force their metadata.
+          coscmd upload -f -H "{'Cache-Control': 'max-age=31536000, immutable'}" dist/yuzhoulengmo_360p.mp4 /yuzhoulengmo_360p.mp4
+          coscmd upload -f -H "{'Cache-Control': 'max-age=31536000, immutable'}" dist/yuzhoulengmo_360p.webm /yuzhoulengmo_360p.webm
+
+          # Optionally do the same for Astro's hashed JS/CSS assets for performance:
+          coscmd upload -rsf -H "{'Cache-Control': 'max-age=31536000, immutable'}" dist/_astro/ /_astro/
