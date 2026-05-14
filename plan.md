@@ -2,55 +2,43 @@
 
 ## 0. Project Metadata
 *   **Target Audience:** Mainland China users.
-*   **Regulatory Status:** No ICP filing (deploying HTML to overseas/HK servers, outsourcing video to domestic platforms to bypass).
+*   **Regulatory Status:** No ICP filing.
 *   **Official Domain:** [https://www.yuzhoulengmo.com](https://www.yuzhoulengmo.com)
 *   **Deployment Endpoint:** Tencent Cloud COS Hong Kong (Endpoint obfuscated for open-source; configure via environment variables/GitHub Secrets)
+*   **Required GitHub Secrets for Deployment:** `TENCENT_COS_SECRET_ID`, `TENCENT_COS_SECRET_KEY`, `TENCENT_COS_BUCKET` (e.g., `my-website-1250000000`), `TENCENT_COS_REGION` (e.g., `ap-hongkong`)
 *   **Video Source:** Local Video Asset (MP4/WebM hosted alongside the site)
 
 ## 1. Product Overview & Core Concept
-*   **The Hook:** A classic "Daily Fortune" (今日运势) interactive web page.
-*   **The Punchline:** Regardless of the result (Good, Bad, Neutral), it inevitably triggers the "宇宙冷漠" video.
+*   **Hook:** A classic "Daily Fortune" (今日运势) interactive web page.
+*   **Punchline:** Regardless of result, it inevitably triggers the "宇宙冷漠" video.
 *   **Vibe:** Minimalist, smooth, and slightly existential.
 
 ## 2. User Flow & UX/UI Specification
-*   **Phase 1: The Setup (Initial State)**
+*   **Phase 1: Setup (Initial State)**
     *   UI exclusively displays the Fortune Generator (a button/shaker).
-    *   Video player is completely hidden (opacity 0) in the background so it doesn't distract the user.
-    *   *Background Task:* Video resource begins silent preloading immediately upon page visit.
-*   **Phase 2: The Interaction**
-    *   User interacts by clicking "Roll Fortune".
-    *   A brief fake loading/rolling animation plays to build anticipation.
+    *   Video is completely hidden, but begins preloading.
+*   **Phase 2: Interaction**
+    *   User clicks "Roll Fortune".
+    *   A brief fake rolling animation plays.
     *   A random fortune text is presented to the user.
-*   **Phase 3: The Inevitability (Transition)**
-    *   A ~1.5 second pause allows the user to register the fortune they received.
+*   **Phase 3: Inevitability (Transition)**
+    *   A ~1.5 second pause for reading the fortune.
     *   The Fortune UI transitions/fades out smoothly.
-    *   The "宇宙冷漠" video fades in (opacity 0 to 1) taking over the screen.
-    *   The video auto-plays with sound (browser autoplay policies enable this because the user previously interacted with the "Roll Fortune" button).
+    *   The "宇宙冷漠" video fades in, taking over the screen.
 
-## 3. Video Delivery Strategy (Optimized for Customization & No ICP)
-Relying on third-party video platforms restricts customization (UI overlays, playback control, focus hijacking). Therefore, we adopt a **Local Video Hosting Strategy**.
+## 3. Video Delivery Strategy
 
-### The Solution: Optimized 360p Progressive HTML5 `<video>`
-*   **Target Resolution & File Size:** The 3-minute video will be compressed to 360p (WebM or MP4/H.264) using `ffmpeg` with `faststart` (`-movflags +faststart`). This brings the payload down to ~4MB even for full-file downloads.
-*   **How it works:** The web-optimized video file is served statically from the `public/` directory via a standard HTML5 `<video>` tag. We preload the video silently using `preload="auto"`.
-*   **Implementation Specs:**
-    1.  **The Embed:** `<video id="fortune-video" src="/assets/yuzhoulengmo_360p.mp4" preload="auto" playsinline></video>`.
-    2.  **The Play Trigger:** When the user clicks the "Roll Fortune" button (satisfying browser autoplay policies), we programmatically call `.play()` on the hidden video.
-    3.  **The Swap:** After the fortune reading time elapses, CSS transitions fade out the UI and fade in the video to 100% opacity for a seamless visual handoff.
+### The Solution: HTML5 `<video>`
+*   **Target Resolution:** The 3-minute video is compressed to 360p (WebM or MP4/H.264) using `ffmpeg` to ~8MB.
+```bash
+    ffmpeg -y -i public/yuzhoulengmo.mp4 -vf scale=-2:360 -r 24 -c:v libvpx-vp9 -crf 32 -b:v 200k -row-mt 1 -c:a libopus -b:a 128k public/yuzhoulengmo_360p.webm
+    ffmpeg -y -i public/yuzhoulengmo.mp4 -vf scale=-2:360 -r 24 -c:v libx264 -preset veryslow -crf 26 -c:a aac -b:a 128k -movflags +faststart public/yuzhoulengmo_360p.mp4
+```
 
 ### Evaluated & Eliminated Candidates
-*   **HLS (HTTP Live Streaming):** Over-engineering for a ~3MB payload. Adding `hls.js` increases JS bundle size (~100kb), while parsing manifests and fetching discrete chunks adds unnecessary time-to-first-frame latency.
-*   **MPEG-DASH:** Suffers the same overhead latency/complexity as HLS, with the critical added drawback of poor out-of-the-box support on iOS Safari.
+*   **HLS (HTTP Live Streaming):** Over-engineering for a ~8MB payload. Adding `hls.js` parses manifests and fetches discrete chunks adds unnecessary time-to-first-frame latency.
+*   **MPEG-DASH:** Same overhead latency/complexity as HLS, with added drawback of poor out-of-the-box support on iOS Safari.
 
 ## 4. Technical Architecture
 *   **Frontend Framework:** Astro (for fast static HTML generation) + Svelte (for the interactive Fortune Generator state).
-*   **State Management:** Define explicit states within the Svelte component: `Idle` -> `Rolling` -> `Revealed` -> `VideoTransitioning`.
-*   **Transition Choreography:** Use Svelte's built-in `fade` transitions and CSS keyframes to handle the UI swap seamlessly.
-*   **Deployment:** Static site hosting via Tencent Cloud COS (Hong Kong region, avoiding the ICP requirement). The lightweight HTML/JS bundle is served from your COS endpoint (mapped to `www.yuzhoulengmo.com`). Speeds in China will be perfectly acceptable, and the heavy video lifting is deferred to Bilibili.
-
-## 5. Development Milestones
-*   **Milestone 1:** Basic UI layout and Fortune randomization state machine (without video logic).
-*   **Milestone 2:** Integrate the HTML5 video element, prioritize preloading, and hide the player.
-*   **Milestone 3:** Wire up the UI states to the Video player (Triggering `.play()` and sound after the rollout).
-*   **Milestone 4:** CSS transition choreography (The smooth swap between the UI and Video).
-*   **Milestone 5:** Cross-browser testing (Verify that iOS Safari and Chrome autoplay policies permit the sound after the interaction).
+*   **Deployment:** Github actions deploying to static site hosting via Tencent Cloud COS (Hong Kong region, avoiding the ICP requirement).
