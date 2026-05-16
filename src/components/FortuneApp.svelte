@@ -187,7 +187,7 @@
         class={state !== 'Idle' ? 'pointer-events-none opacity-0' : 'opacity-100'}
         disabled={state !== 'Idle'}
       >
-        抽取
+        占卜
       </RollButton>
     </div>
   {/if}

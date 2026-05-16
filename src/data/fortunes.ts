@@ -9,7 +9,7 @@ export const fortunes: Fortune[] = [
   {
     name: '超超超大吉',
     color: '#ff4d4f',
-    comment: '这条运势出现的概率仅有1/1000000！',
+    comment: '这条运势出现的概率仅有1/1000000!',
     weight: 0.00002,
   },
   {
@@ -60,7 +60,7 @@ export const fortunes: Fortune[] = [
   {
     name: '黑暗之拥',
     color: '#5cdbd3',
-    comment: '到底是谁在偷偷放宇宙冷漠给我听?',
+    comment: '到底是谁在偷偷放宇宙冷漠给我听!?',
   },
   {
     name: '重振精神',
@@ -83,7 +83,7 @@ export const fortunes: Fortune[] = [
     comment: '向猎宝学习!',
   },
   {
-    name: '下去！',
+    name: '下去!',
     color: '#5cdbd3',
     comment: '老大我听宇宙冷漠',
   },
@@ -115,7 +115,7 @@ export const fortunes: Fortune[] = [
   {
     name: '创造性AI',
     color: '#5cdbd3',
-    comment: '你以为宇宙冷漠是谁作的曲?',
+    comment: '你以为宇宙冷漠是谁作的曲[doge]',
   },
   {
     name: '帐篷',
