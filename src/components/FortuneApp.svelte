@@ -249,6 +249,7 @@
   }
 
   .fortune-comment {
+    white-space: pre-wrap;
     position: absolute;
     top: calc(50% + 1.8rem);
     left: 50%;
