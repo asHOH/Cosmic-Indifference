@@ -129,7 +129,7 @@
 
       <div class="h-32 flex items-center justify-center text-6xl font-light">
         {#if (state === "Rolling" || state === "Revealed") && currentFortune}
-          <span class="tracking-widest" style="color: {currentFortune.color}">{currentFortune.text}</span>
+          <span class="tracking-widest" style="color: {currentFortune.color}">{currentFortune.name}</span>
         {/if}
       </div>
 
