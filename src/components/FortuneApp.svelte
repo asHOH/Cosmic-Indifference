@@ -42,13 +42,26 @@
   const delay = (ms: number) =>
     new Promise((resolve) => setTimeout(resolve, ms));
 
+  const totalWeight = fortunes.reduce(
+    (sum, fortune) => sum + (fortune.weight ?? 1),
+    0,
+  );
+
+  function randomFortune() {
+    let roll = Math.random() * totalWeight;
+    return (
+      fortunes.find((fortune) => (roll -= fortune.weight ?? 1) <= 0) ??
+      fortunes[fortunes.length - 1]
+    );
+  }
+
   async function rollFortune() {
     state = "Rolling";
     safePlay(true); // Prewarm the video engine
 
     // Fake rolling animation
     for (let i = 0; i < TIMING.ROLL_ITERATIONS; i++) {
-      currentFortune = fortunes[Math.floor(Math.random() * fortunes.length)];
+      currentFortune = randomFortune();
       await delay(TIMING.ROLL_INTERVAL_MS);
     }
 
@@ -129,7 +142,9 @@
 
       <div class="h-32 flex items-center justify-center text-6xl font-light">
         {#if (state === "Rolling" || state === "Revealed") && currentFortune}
-          <span class="tracking-widest" style="color: {currentFortune.color}">{currentFortune.name}</span>
+          <span class="tracking-widest" style="color: {currentFortune.color}"
+            >{currentFortune.name}
+          </span>
         {/if}
       </div>
 
