@@ -1,0 +1,9 @@
+glob_matcher: doublestar
+
+pre-commit:
+  jobs:
+    - name: prettier
+      glob:
+        - '**/*.{astro,svelte,js,jsx,ts,tsx,json,jsonc,css,md,yml,yaml,html}'
+      run: npm exec -- prettier --write {staged_files}
+      stage_fixed: true

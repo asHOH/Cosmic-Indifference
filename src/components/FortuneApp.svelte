@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { fade } from "svelte/transition";
-  import RollButton from "./RollButton.svelte";
+  import { fade } from 'svelte/transition';
+  import RollButton from './RollButton.svelte';
 
   // Animation and timing configurations
   const TIMING = {
@@ -13,10 +13,10 @@
     VIDEO_FADE_OUT_MS: 1000, // Video fade-out duration at the end
   };
 
-  type State = "Idle" | "Rolling" | "Revealed" | "VideoPlaying";
-  let state: State = "Idle";
+  type State = 'Idle' | 'Rolling' | 'Revealed' | 'VideoPlaying';
+  let state: State = 'Idle';
 
-  import { fortunes, type Fortune } from "../data/fortunes";
+  import { fortunes, type Fortune } from '../data/fortunes';
   let currentFortune: Fortune | null = null;
   let videoEl: HTMLVideoElement;
   let videoVisible = false;
@@ -31,21 +31,17 @@
         videoEl.currentTime = 0;
       }
     } catch (error: any) {
-      if (error.name === "AbortError") {
+      if (error.name === 'AbortError') {
         // Expected if pause() is called before play() finishes. Safe to ignore.
         return;
       }
-      console.warn("Playback failed:", error.name, error.message);
+      console.warn('Playback failed:', error.name, error.message);
     }
   }
 
-  const delay = (ms: number) =>
-    new Promise((resolve) => setTimeout(resolve, ms));
+  const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-  const totalWeight = fortunes.reduce(
-    (sum, fortune) => sum + (fortune.weight ?? 1),
-    0,
-  );
+  const totalWeight = fortunes.reduce((sum, fortune) => sum + (fortune.weight ?? 1), 0);
 
   function randomFortune() {
     let roll = Math.random() * totalWeight;
@@ -56,7 +52,7 @@
   }
 
   async function rollFortune() {
-    state = "Rolling";
+    state = 'Rolling';
     safePlay(true); // Prewarm the video engine
 
     // Fake rolling animation
@@ -65,12 +61,12 @@
       await delay(TIMING.ROLL_INTERVAL_MS);
     }
 
-    state = "Revealed";
+    state = 'Revealed';
 
     // Wait for user to read the fortune
     await delay(TIMING.REVEAL_DURATION_MS);
 
-    state = "VideoPlaying";
+    state = 'VideoPlaying';
 
     // Wait for UI to fade out
     await delay(TIMING.UI_FADE_OUT_MS);
@@ -84,7 +80,7 @@
   }
 
   function togglePlay() {
-    if (!videoEl || state !== "VideoPlaying") return;
+    if (!videoEl || state !== 'VideoPlaying') return;
     if (videoEl.paused) {
       videoEl.play();
     } else {
@@ -128,20 +124,18 @@
 </script>
 
 <main
-  class="w-full h-full relative flex items-center justify-center bg-black text-white overflow-hidden"
+  class="relative flex h-full w-full items-center justify-center overflow-hidden bg-black text-white"
 >
   <!-- Fortune UI -->
-  {#if state !== "VideoPlaying"}
+  {#if state !== 'VideoPlaying'}
     <div
-      class="z-20 flex flex-col items-center justify-center space-y-8 absolute"
+      class="absolute z-20 flex flex-col items-center justify-center space-y-8"
       transition:fade={{ duration: TIMING.UI_FADE_OUT_MS }}
     >
-      <h1 class="text-5xl font-bold tracking-widest text-[#95cdfe]">
-        今日运势
-      </h1>
+      <h1 class="text-5xl font-bold tracking-widest text-[#95cdfe]">今日运势</h1>
 
-      <div class="h-32 flex items-center justify-center text-6xl font-light">
-        {#if (state === "Rolling" || state === "Revealed") && currentFortune}
+      <div class="flex h-32 items-center justify-center text-6xl font-light">
+        {#if (state === 'Rolling' || state === 'Revealed') && currentFortune}
           <span class="tracking-widest" style="color: {currentFortune.color}"
             >{currentFortune.name}
           </span>
@@ -150,10 +144,8 @@
 
       <RollButton
         on:click={rollFortune}
-        class={state !== "Idle"
-          ? "opacity-0 pointer-events-none"
-          : "opacity-100"}
-        disabled={state !== "Idle"}
+        class={state !== 'Idle' ? 'pointer-events-none opacity-0' : 'opacity-100'}
+        disabled={state !== 'Idle'}
       >
         抽取
       </RollButton>
@@ -174,9 +166,9 @@
     on:play={scheduleFadeOut}
     on:pause={clearFadeOut}
     on:ended={handleVideoEnded}
-    class="absolute top-0 left-0 w-full h-full object-cover transition-opacity ease-in cursor-pointer z-10"
-    style:opacity={videoVisible ? "1" : "0"}
-    style:pointer-events={videoVisible ? "auto" : "none"}
+    class="absolute top-0 left-0 z-10 h-full w-full cursor-pointer object-cover transition-opacity ease-in"
+    style:opacity={videoVisible ? '1' : '0'}
+    style:pointer-events={videoVisible ? 'auto' : 'none'}
     style:transition-duration="{videoVisible
       ? TIMING.VIDEO_FADE_IN_MS
       : TIMING.VIDEO_FADE_OUT_MS}ms"
