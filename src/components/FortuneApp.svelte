@@ -5,6 +5,7 @@
   // Animation and timing configurations
   const TIMING = {
     ROLL_INTERVAL_MS: 50,
+    ROLL_SLOWDOWN_MULTIPLIER: 1.1,
     ROLL_ITERATIONS: 20,
     REVEAL_DURATION_MS: 3000, // Time to display the fortune
     UI_FADE_OUT_MS: 1000, // UI fade-out duration; video starts after this
@@ -56,9 +57,11 @@
     safePlay(true); // Prewarm the video engine
 
     // Fake rolling animation
+    let rollIntervalMs = TIMING.ROLL_INTERVAL_MS;
     for (let i = 0; i < TIMING.ROLL_ITERATIONS; i++) {
       currentFortune = randomFortune();
-      await delay(TIMING.ROLL_INTERVAL_MS);
+      await delay(rollIntervalMs);
+      rollIntervalMs *= TIMING.ROLL_SLOWDOWN_MULTIPLIER;
     }
 
     state = 'Revealed';
@@ -136,7 +139,10 @@
 
       <div class="flex h-32 items-center justify-center text-6xl font-light">
         {#if (state === 'Rolling' || state === 'Revealed') && currentFortune}
-          <span class="tracking-widest" style="color: {currentFortune.color}"
+          <span
+            class="tracking-widest"
+            class:final-fortune={state === 'Revealed'}
+            style="color: {currentFortune.color}"
             >{currentFortune.name}
           </span>
         {/if}
@@ -180,3 +186,21 @@
     <track kind="captions" />
   </video>
 </main>
+
+<style>
+  .final-fortune {
+    animation: final-fortune 700ms ease-out both;
+    text-shadow: 0 0 18px currentColor;
+  }
+
+  @keyframes final-fortune {
+    from {
+      transform: scale(1.08);
+      opacity: 0.75;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+</style>
