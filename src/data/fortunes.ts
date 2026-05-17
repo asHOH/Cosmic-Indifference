@@ -13,6 +13,12 @@ export const fortunes: Fortune[] = [
     weight: 0.00002,
   },
   {
+    name: '大大吉',
+    color: '#ff4d4f',
+    comment: '比这些年大家的卡组还大!',
+    weight: 0.125,
+  },
+  {
     name: '大吉',
     color: '#ff4d4f',
     comment: '中大奖了! (此处有一储君笑话)',
@@ -136,6 +142,11 @@ export const fortunes: Fortune[] = [
     name: '欧洛巴斯',
     color: '#5cdbd3',
     comment: '什么歌? 真好听! 再唱唱! 再唱唱!!',
+  },
+  {
+    name: '小卡组',
+    color: '#5cdbd3',
+    comment: '找人弄我我也要玩小卡组!',
   },
   {
     name: '宇宙员',
