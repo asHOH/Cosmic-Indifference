@@ -13,7 +13,7 @@
 
 - **Hook:** A "Daily Fortune" (今日运势) interactive web page.
 - **Punchline:** Regardless of result, it triggers the "宇宙冷漠" video.
-- **Secondary Function:** A lyric/singer multiple-choice quiz for "宇宙冷漠"; detailed rules live in `quiz plan.md`.
+- **Secondary Function:** A lyric/singer multiple-choice quiz for "宇宙冷漠"; detailed rules live in `quiz-plan.md`.
 - **Vibe:** Minimalist and smooth.
 
 ## 2. UX/UI Spec
@@ -41,7 +41,7 @@
     ffmpeg -y -i public/yuzhoulengmo.mp4 -vf scale=-2:360 -r 24 -c:v libx264 -preset veryslow -crf 26 -c:a aac -b:a 128k -movflags +faststart public/yuzhoulengmo_360p.mp4
 ```
 
-### Eliminated Candidates
+### Rejected Alternatives
 
 - **HLS (HTTP Live Streaming):** Over-engineering for a ~8MB payload. `hls.js` adds time-to-first-frame latency.
 - **MPEG-DASH:** Same overhead latency/complexity as HLS, with added drawback of compatibility.
