@@ -13,6 +13,7 @@
 
 - **Hook:** A "Daily Fortune" (今日运势) interactive web page.
 - **Punchline:** Regardless of result, it triggers the "宇宙冷漠" video.
+- **Secondary Function:** A lyric/singer multiple-choice quiz for "宇宙冷漠"; detailed rules live in `quiz plan.md`.
 - **Vibe:** Minimalist and smooth.
 
 ## 2. UX/UI Spec
