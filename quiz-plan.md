@@ -33,8 +33,9 @@ Question 10 has 50% chance to quiz the singer; otherwise it also quizzes the lyr
 ## Questions to ask:
 
 1. "“宇宙冷漠”这首歌的{第一句/最后一句}歌词是什么？" (Only if this question targets the first/last lyric)
-2. "{lyric}的{上/下}一句是什么？" (Ensure uniqueness of that line of lyric; you may add another lyric to ensure uniqueness; omit any line that ends with `~` when asking this way)
+2. "[lyric]的{上/下}一句是什么？" (Ensure uniqueness of that line of lyric; you may add another lyric to ensure uniqueness; omit any line that ends with `~` when asking this way)
 3. "以下哪一句是咔咔唱的？" (only for the 10th question)
+4. "以下哪一句歌词的{上/下}一句是“{芜~/嘎嘎嘎~}”？" (only for the 10th question)
 
 For questions 1~9, first choose a random lyric to be the target of the quiz question, then choose one valid way to ask that question.
 
@@ -42,7 +43,11 @@ For the first/last lyric, choose between pattern 1 and the valid variant of patt
 
 When asking "{lyric}的下一句是什么？", if the previous line is not unique, try including the two previous lines as context. If there is only one line before it, switch to "{lyric}的上一句是什么？". Apply the same rule in the opposite direction when asking "{lyric}的上一句是什么？".
 
-For question 10, use 50% chance to ask the singer question. The singer question answer options should include one random lyric line among all Kakaa-sung lines and two random lyric lines among all non-Kakaa-sung lines, avoiding every line ending with `~`.
+For question 10, choose between pattern 3 (singer question) and 4 (wu question).
+
+The singer question answer options should include one random lyric line among all Kakaa-sung lines and two random lyric lines among all non-Kakaa-sung lines, avoiding every line ending with `~`.
+
+The wu question answer options should include one random lyric line before/after a 芜~/嘎嘎嘎~ line and two random lyric lines among all non-Kakaa-sung lines, avoiding every line ending with `~`. Note that, when asking on "芜~", distraction option should not include the line before/after the two lines ending with "芜（轻）~", to ensure solid correct answer.
 
 ## Answer option generation
 
