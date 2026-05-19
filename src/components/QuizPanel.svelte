@@ -36,10 +36,15 @@
   let showAdvance = false;
   let celebration: 'none' | 'modest' | 'perfect' = 'none';
   let particles: CelebrationParticle[] = [];
+  let currentQuestion: QuizQuestion | undefined;
+  let currentOptions: QuizOption[] = [];
+  let visibleParticles: CelebrationParticle[] = [];
   let holdTimer: ReturnType<typeof setTimeout> | undefined;
   let resultTimer: ReturnType<typeof setTimeout> | undefined;
 
   $: currentQuestion = questions[currentIndex];
+  $: currentOptions = currentQuestion?.options ?? [];
+  $: visibleParticles = particles;
   $: progressText = `${Math.min(currentIndex + 1, questions.length)} / ${questions.length}`;
   $: resultBadge = badgeForScore(score);
 
@@ -174,7 +179,7 @@
       <h1 class="question-prompt">{currentQuestion.prompt}</h1>
 
       <div class="answer-grid">
-        {#each currentQuestion.options as option, index (option.id)}
+        {#each currentOptions as option, index (option.id)}
           <button
             type="button"
             class="answer-option"
@@ -202,9 +207,9 @@
       class:celebrate-perfect={celebration === 'perfect'}
       aria-live="polite"
     >
-      {#if particles.length > 0}
+      {#if visibleParticles.length > 0}
         <div class="celebration-field" aria-hidden="true">
-          {#each particles as particle (particle.id)}
+          {#each visibleParticles as particle (particle.id)}
             <span
               class="particle"
               style="--x: {particle.x}px; --y: {particle.y}px; --spin: {particle.spin}deg; --delay: {particle.delay}ms; --size: {particle.size}"
