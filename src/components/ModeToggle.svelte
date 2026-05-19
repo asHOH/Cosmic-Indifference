@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { RefreshCw } from '@lucide/svelte';
+
   export let mode: 'fortune' | 'quiz';
   export let onToggle: () => void = () => {};
 
@@ -12,19 +14,5 @@
   title={label}
   on:click={onToggle}
 >
-  <svg
-    aria-hidden="true"
-    viewBox="0 0 24 24"
-    class="h-7 w-7"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="1.8"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  >
-    <path d="M17 2v5h-5" />
-    <path d="M7 22v-5h5" />
-    <path d="M18.8 9A7 7 0 0 0 7.2 5.2L12 7" />
-    <path d="M5.2 15A7 7 0 0 0 16.8 18.8L12 17" />
-  </svg>
+  <RefreshCw aria-hidden="true" class="h-7 w-7" strokeWidth={2} />
 </button>
