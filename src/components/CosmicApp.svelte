@@ -123,7 +123,7 @@
           onComplete={playVideoAfterFeature}
         />
       {:else}
-        <QuizPanel onStart={handleFeatureStart} />
+        <QuizPanel onStart={handleFeatureStart} onComplete={playVideoAfterFeature} />
       {/if}
     </div>
   {/if}
