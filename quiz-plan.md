@@ -2,6 +2,23 @@
 
 10 multiple-choice questions, 10 points each. Each question has 4 answer options (A-D) and exactly one correct answer.
 
+## UI
+
+Add a second app mode named `测试：宇宙冷漠`, parallel to the initial `今日运势` mode. A fixed borderless icon button toggles between the fortune and quiz modes. The toggle hides itself if one clicks the `占卜` button at `今日运势` mode or `我有所了解` (start the quiz) in this mode.
+
+During the quiz, show one question at a time with progress, score, and four answer buttons; after selection, advance to the next question. Long-press an answer button for ~500ms to confirm selection. Show an easing progressbar on the button backgroundduring the long press.
+
+After the quiz, show the score and result badge:
+
+- 0-50: 💩
+- 60-69: 👍
+- 70-79: bronze trophy
+- 80-89: silver trophy
+- 90-99: gold trophy
+- 100: diamond trophy
+
+Scores 60-99 get a modest celebration effect. A perfect score gets an extremely exaggerated and crazy celebration effect (this is intentional).
+
 ## Data
 
 `src/data/lyrics.txt` contains one lyric line per non-empty line.
