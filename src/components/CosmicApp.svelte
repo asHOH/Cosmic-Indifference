@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { fade } from 'svelte/transition';
+  import { cubicOut } from 'svelte/easing';
+  import { fade, fly } from 'svelte/transition';
   import FortunePanel from './FortunePanel.svelte';
   import ModeToggle from './ModeToggle.svelte';
   import QuizPanel from './QuizPanel.svelte';
@@ -18,7 +19,11 @@
     VIDEO_FADE_OUT_MS: 1000, // Video fade-out duration at the end
   };
 
+  const MODE_INTRO_MS = 420;
+  const MODE_OUTRO_MS = 260;
   const fadeTransition = fade;
+  const flyTransition = fly;
+  const modeEasing = cubicOut;
 
   type AppMode = 'fortune' | 'quiz';
   type PlaybackState = 'Interactive' | 'VideoPlaying';
@@ -28,11 +33,13 @@
   let showModeToggle = true;
   let videoEl: HTMLVideoElement;
   let videoVisible = false;
+  let modeTransitionDirection = 1;
   let fadeOutTimer: ReturnType<typeof setTimeout>;
 
   const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
   function toggleMode() {
+    modeTransitionDirection = appMode === 'fortune' ? 1 : -1;
     appMode = appMode === 'fortune' ? 'quiz' : 'fortune';
   }
 
@@ -116,15 +123,37 @@
 >
   {#if playbackState !== 'VideoPlaying'}
     <div transition:fadeTransition={{ duration: TIMING.UI_FADE_OUT_MS }}>
-      {#if appMode === 'fortune'}
-        <FortunePanel
-          timing={TIMING}
-          onStart={handleFeatureStart}
-          onComplete={playVideoAfterFeature}
-        />
-      {:else}
-        <QuizPanel onStart={handleFeatureStart} onComplete={playVideoAfterFeature} />
-      {/if}
+      <div class="mode-transition-stage">
+        {#key appMode}
+          <div
+            class="mode-panel"
+            in:flyTransition={{
+              x: modeTransitionDirection * 30,
+              y: 10,
+              duration: MODE_INTRO_MS,
+              easing: modeEasing,
+              opacity: 0,
+            }}
+            out:flyTransition={{
+              x: modeTransitionDirection * -30,
+              y: -10,
+              duration: MODE_OUTRO_MS,
+              easing: modeEasing,
+              opacity: 0,
+            }}
+          >
+            {#if appMode === 'fortune'}
+              <FortunePanel
+                timing={TIMING}
+                onStart={handleFeatureStart}
+                onComplete={playVideoAfterFeature}
+              />
+            {:else}
+              <QuizPanel onStart={handleFeatureStart} onComplete={playVideoAfterFeature} />
+            {/if}
+          </div>
+        {/key}
+      </div>
     </div>
   {/if}
 
@@ -153,3 +182,26 @@
     <track kind="captions" />
   </video>
 </main>
+
+<style>
+  .mode-transition-stage {
+    display: grid;
+    width: 100%;
+    min-height: min(78vh, 34rem);
+    place-items: center;
+  }
+
+  .mode-panel {
+    display: flex;
+    grid-area: 1 / 1;
+    width: 100%;
+    justify-content: center;
+    will-change: transform, opacity;
+  }
+
+  @media (max-width: 640px) {
+    .mode-transition-stage {
+      min-height: min(76vh, 38rem);
+    }
+  }
+</style>
