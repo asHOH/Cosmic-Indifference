@@ -155,7 +155,7 @@
 </script>
 
 <div
-  class="quiz-shell absolute z-20 flex flex-col items-center justify-center text-center"
+  class="quiz-shell relative z-20 flex flex-col items-center justify-center text-center"
   style="--hold-confirm-ms: {HOLD_CONFIRM_MS}ms"
 >
   {#if state === 'Idle'}

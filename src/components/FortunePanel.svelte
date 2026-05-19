@@ -71,7 +71,7 @@
 </script>
 
 <div
-  class="absolute z-20 flex flex-col items-center justify-center space-y-8"
+  class="relative z-20 flex flex-col items-center justify-center space-y-8"
   style="--final-fortune-animation-ms: {timing.FINAL_FORTUNE_ANIMATION_MS}ms; --fortune-lift-ms: {timing.FORTUNE_LIFT_MS}ms"
 >
   <h1 class="text-5xl font-bold tracking-widest text-[#95cdfe]">今日运势</h1>
