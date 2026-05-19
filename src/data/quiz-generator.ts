@@ -29,6 +29,7 @@ export type QuizQuestion = {
 
 type Random = () => number;
 type NeighborDirection = 'previous' | 'next';
+type OptionContextSide = 'previous' | 'next';
 
 const JOKE_ANSWER = '宇宙冷漠';
 const KAKAA = 'kakaa';
@@ -318,11 +319,21 @@ function makeLyricQuestion(parsed: ParsedQuizSources, random: Random): QuizQuest
   };
 }
 
-function optionTextForIndexedLine(parsed: ParsedQuizSources, lyric: QuizLyric) {
+function optionTextForIndexedLine(
+  parsed: ParsedQuizSources,
+  lyric: QuizLyric,
+  contextSide: OptionContextSide = 'previous'
+) {
   if (isUniqueText(parsed.lyrics, lyric)) return lyric.text;
 
   const previous = parsed.lyrics[lyric.index - 1]?.text;
   const next = parsed.lyrics[lyric.index + 1]?.text;
+
+  if (contextSide === 'next') {
+    if (next) return `${lyric.text} / ${next}`;
+    if (previous) return `${previous} / ${lyric.text}`;
+  }
+
   if (previous) return `${previous} / ${lyric.text}`;
   if (next) return `${lyric.text} / ${next}`;
   return lyric.text;
@@ -332,19 +343,22 @@ function makeSpecialOptions(
   parsed: ParsedQuizSources,
   correct: QuizLyric,
   distractors: QuizLyric[],
-  random: Random
+  random: Random,
+  contextSide: OptionContextSide = 'previous'
 ): QuizOption[] {
-  const correctText = optionTextForIndexedLine(parsed, correct);
+  const correctText = optionTextForIndexedLine(parsed, correct, contextSide);
   const options = [
     { id: 'correct', text: correctText, correct: true },
     ...sampleUnique(
-      distractors.filter((lyric) => optionTextForIndexedLine(parsed, lyric) !== correctText),
+      distractors.filter(
+        (lyric) => optionTextForIndexedLine(parsed, lyric, contextSide) !== correctText
+      ),
       3,
       random,
-      (lyric) => optionTextForIndexedLine(parsed, lyric)
+      (lyric) => optionTextForIndexedLine(parsed, lyric, contextSide)
     ).map((lyric, index) => ({
       id: optionId('special', index),
-      text: optionTextForIndexedLine(parsed, lyric),
+      text: optionTextForIndexedLine(parsed, lyric, contextSide),
       correct: false,
     })),
   ];
@@ -391,6 +405,7 @@ function makeMarkerQuestion(parsed: ParsedQuizSources, random: Random): QuizQues
     neighborMatches(parsed.lyrics, lyric, direction, marker)
   );
   const correct = pick(correctCandidates, random);
+  const contextSide = direction === '上' ? 'next' : 'previous';
   const distractors = eligible.filter((lyric) => {
     if (neighborMatches(parsed.lyrics, lyric, direction, marker)) return false;
     if (marker === '芜~' && isNearLightWu(parsed.lyrics, lyric)) return false;
@@ -399,8 +414,8 @@ function makeMarkerQuestion(parsed: ParsedQuizSources, random: Random): QuizQues
 
   return {
     prompt: `以下哪一句歌词的${direction}一句是“${marker}”？`,
-    answer: optionTextForIndexedLine(parsed, correct),
-    options: makeSpecialOptions(parsed, correct, distractors, random),
+    answer: optionTextForIndexedLine(parsed, correct, contextSide),
+    options: makeSpecialOptions(parsed, correct, distractors, random, contextSide),
     kind: 'special',
   };
 }

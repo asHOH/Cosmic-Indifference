@@ -94,6 +94,28 @@ async function verifyQuizGenerator() {
       );
     }
   }
+
+  const seededRandom = (seed) => {
+    let state = seed;
+    return () => {
+      state = (state * 1664525 + 1013904223) >>> 0;
+      return state / 0x100000000;
+    };
+  };
+
+  const badMarkerAnswer = Array.from({ length: 1000 }, (_, seed) =>
+    quiz.generateQuiz(parsed, seededRandom(seed + 1)).at(-1)
+  ).find(
+    (question) =>
+      question?.prompt === '以下哪一句歌词的上一句是“芜~”？' &&
+      question.options.some((option) => option.correct && option.text === '芜~ / 无边的黑暗')
+  );
+
+  assert.equal(
+    badMarkerAnswer,
+    undefined,
+    'marker questions should disambiguate duplicate answer lyrics away from the marker prompt'
+  );
 }
 
 verifyFortunes();
