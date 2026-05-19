@@ -5,4 +5,4 @@ Run `npm run format` after edits.
 Pre-commit uses Lefthook from `lefthook.yml`.
 The hook runs Prettier on staged format-supported files.
 Project plan and task context live in `plan.md`.
-App UI is mainly in `src/components/FortuneApp.svelte`; fortunes live in `src/data/fortunes.ts`.
+App UI is mainly in `src/components/CosmicApp.svelte`; fortunes live in `src/data/fortunes.ts`.
