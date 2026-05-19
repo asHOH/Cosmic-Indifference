@@ -1,0 +1,170 @@
+[[fortunes]]
+name = "超超超大吉"
+color = "#ff4d4f"
+comment = "这条运势出现的概率仅有1/1000000!"
+weight = 0.00002
+
+[[fortunes]]
+name = "大大吉"
+color = "#ff4d4f"
+comment = "比这些年大家的卡组还大!"
+weight = 0.125
+
+[[fortunes]]
+name = "大吉"
+color = "#ff4d4f"
+comment = "中大奖了! (此处有一储君笑话)"
+
+[[fortunes]]
+name = "吉"
+color = "#ff7a45"
+comment = "哦吉吉煲尖塔里做英雄🎵"
+
+[[fortunes]]
+name = "小吉"
+color = "#bae637"
+comment = "一定会长大的啦~"
+
+[[fortunes]]
+name = "战未来"
+color = "#5cdbd3"
+comment = "下个小怪会掉旋风斩哦~"
+
+[[fortunes]]
+name = "君王之剑"
+color = "#5cdbd3"
+comment = "布豪噶人焖好多蟑螂!"
+
+[[fortunes]]
+name = "剑圣"
+color = "#5cdbd3"
+comment = "🎵真空剑圣!🎵"
+
+[[fortunes]]
+name = "蛇咬"
+color = "#5cdbd3"
+comment = "啊♥呜♥~"
+
+[[fortunes]]
+name = "宇宙冷漠"
+color = "#5cdbd3"
+comment = "今天也是想听宇宙冷漠的一天呢~"
+
+[[fortunes]]
+name = "时候未到"
+color = "#5cdbd3"
+comment = "晚点再来一签吧~"
+
+[[fortunes]]
+name = "黑暗之拥"
+color = "#5cdbd3"
+comment = "到底是谁在偷偷放宇宙冷漠给我听!?"
+
+[[fortunes]]
+name = "重振精神"
+color = "#5cdbd3"
+comment = "向战士哥学习!"
+
+[[fortunes]]
+name = "铁斩波"
+color = "#5cdbd3"
+comment = "攻防一体的艺术品!"
+
+[[fortunes]]
+name = "耸肩无视"
+color = "#5cdbd3"
+comment = "保持心态豁达"
+
+[[fortunes]]
+name = "计划妥当"
+color = "#5cdbd3"
+comment = "向猎宝学习!"
+
+[[fortunes]]
+name = "下去!"
+color = "#5cdbd3"
+comment = "老大我听宇宙冷漠"
+
+[[fortunes]]
+name = "恐惧"
+color = "#5cdbd3"
+comment = "骨姐也懂宇宙冷漠吗?"
+
+[[fortunes]]
+name = "友谊"
+color = "#5cdbd3"
+comment = "向骨姐学习!"
+
+[[fortunes]]
+name = "空无"
+color = "#5cdbd3"
+comment = "机宝也懂宇宙冷漠吗?"
+
+[[fortunes]]
+name = "冷静头脑"
+color = "#5cdbd3"
+comment = "向胖煲煲学习!"
+
+[[fortunes]]
+name = "电流相生"
+color = "#5cdbd3"
+comment = "实验体和队友的噩梦!"
+
+[[fortunes]]
+name = "创造性AI"
+color = "#5cdbd3"
+comment = "你以为宇宙冷漠是谁作的曲[doge]"
+
+[[fortunes]]
+name = "帐篷"
+color = "#5cdbd3"
+comment = "似乎比大吉更吉利诶"
+
+[[fortunes]]
+name = "开心小花"
+color = "#5cdbd3"
+comment = "要像小花一样开开心心呀!"
+
+[[fortunes]]
+name = "飞溅"
+color = "#5cdbd3"
+comment = "神挡杀神!"
+
+[[fortunes]]
+name = "欧洛巴斯"
+color = "#5cdbd3"
+comment = "什么歌? 真好听! 再唱唱! 再唱唱!!"
+
+[[fortunes]]
+name = "小卡组"
+color = "#5cdbd3"
+comment = "找人弄我我也要玩小卡组!"
+
+[[fortunes]]
+name = "宇宙员"
+color = "#5cdbd3"
+comment = "你今天出太阳系了吗?"
+
+[[fortunes]]
+name = "小凶"
+color = "#8c8c8c"
+comment = "似乎运势也是容易鬼抽的大卡组呢"
+weight = 0.25
+
+[[fortunes]]
+name = "凶"
+color = "#8c8c8c"
+comment = "也许可以考虑sl...?"
+weight = 0.125
+
+[[fortunes]]
+name = "冈"
+color = "#8c8c8c"
+comment = "也许只是拿歪了90°...?"
+weight = 0.25
+
+[[fortunes]]
+name = "区"
+color = "#576574"
+comment = "!?区区!? 我也要蠕动吗..."
+weight = 0.25

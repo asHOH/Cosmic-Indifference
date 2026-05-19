@@ -8,7 +8,7 @@ Add a second app mode named `测试：宇宙冷漠`, parallel to the initial `�
 
 During the quiz, show one question at a time with progress, score, and four answer buttons. Long-press an answer button for ~500ms to confirm selection; show an easing progress bar on the button background during the long press. After confirmation, advance to the next question.
 
-After the quiz, show the score, result badge and a random comment. Result badges:
+After the quiz, show the score, result badge, and a random comment from `src/data/quiz-result-comments.toml`. Result badges:
 
 - 0-50: 💩
 - 60: 👍
@@ -17,7 +17,7 @@ After the quiz, show the score, result badge and a random comment. Result badges
 - 90: gold trophy
 - 100: diamond trophy
 
-The random comment is selected from a corresponding comment pool (~3 comments for each score range). The pool is not set up yet.
+The random comment is selected from the corresponding score bucket: `0-50`, `60`, `70`, `80`, `90`, or `100`.
 
 Scores 60-99 get a modest celebration effect. A perfect score gets an extremely exaggerated and crazy celebration effect (this is intentional).
 
@@ -26,6 +26,8 @@ After showing the result for ~1.5s, show a right-arrow advance button.
 After pressing this button, the UI fades, and like what happens in the fortune app, the `宇宙冷漠` video plays and fades in. Reuse the fortune app's video transition timings.
 
 ## Data
+
+`src/data/quiz-result-comments.toml` contains quiz result comments grouped by score bucket. `src/data/quiz-result-comments.ts` parses and validates it for the app.
 
 `src/data/lyrics.txt` contains one lyric line per non-empty line.
 
