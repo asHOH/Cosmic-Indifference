@@ -25,8 +25,10 @@
   };
 
   const HOLD_CONFIRM_MS = 500;
+  const ANSWER_ADVANCE_DELAY_MS = 700;
   const RESULT_ADVANCE_DELAY_MS = 1500;
   const SCORE_PER_QUESTION = 10;
+  const correctAnswerParticles = Array.from({ length: 7 }, (_, index) => index);
   const modestGlyphs = ['✦', '✧', '•'];
   const perfectGlyphs = ['✦', '✧', '◆', '◇', '✺', '✹', '✷', '✶', '◈'];
 
@@ -138,7 +140,7 @@
       score += SCORE_PER_QUESTION;
     }
 
-    await delay(240);
+    await delay(ANSWER_ADVANCE_DELAY_MS);
 
     if (currentIndex >= questions.length - 1) {
       showResult();
@@ -245,7 +247,7 @@
       </h1>
 
       <div class="answer-grid">
-        {#each currentOptions as option, index (option.id)}
+        {#each currentOptions as option (option.id)}
           <button
             type="button"
             class="answer-option"
@@ -260,7 +262,6 @@
             on:pointercancel={clearHold}
           >
             <span class="answer-fill"></span>
-            <span class="answer-letter">{String.fromCharCode(65 + index)}</span>
             <span class="answer-text">
               {#each lyricTextParts(option.text) as part}
                 {#if part.isSeparator}
@@ -270,6 +271,13 @@
                 {/if}
               {/each}
             </span>
+            {#if selectedOptionId === option.id && option.correct}
+              <span class="answer-correct-particles" aria-hidden="true">
+                {#each correctAnswerParticles as particle}
+                  <span class="answer-correct-particle" style="--particle-index: {particle}"></span>
+                {/each}
+              </span>
+            {/if}
           </button>
         {/each}
       </div>
@@ -396,29 +404,26 @@
 
   .answer-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.72rem;
+    grid-template-columns: 1fr;
+    gap: 0.64rem;
   }
 
   .answer-option {
     position: relative;
-    display: grid;
-    grid-template-columns: 2rem minmax(0, 1fr);
-    min-height: 4.45rem;
+    display: block;
+    min-height: 3.75rem;
     overflow: hidden;
-    border: 1px solid rgb(var(--quiz-accent-rgb) / 0.38);
+    border: 0;
     border-radius: 8px;
     background:
-      linear-gradient(130deg, rgb(255 255 255 / 0.09), rgb(255 255 255 / 0.02)), rgb(3 9 18 / 0.74);
+      linear-gradient(130deg, rgb(255 255 255 / 0.08), rgb(255 255 255 / 0.025)), rgb(3 9 18 / 0.62);
     color: white;
     cursor: pointer;
-    align-items: center;
-    gap: 0.7rem;
-    padding: 0.9rem 1rem;
+    padding: 0.88rem 1.05rem;
     text-align: left;
     touch-action: manipulation;
     transition:
-      border-color 180ms ease,
+      background-color 180ms ease,
       box-shadow 180ms ease,
       transform 180ms ease,
       opacity 180ms ease;
@@ -430,7 +435,9 @@
 
   .answer-option:not(:disabled):hover,
   .answer-option.pressing {
-    border-color: rgb(var(--quiz-accent-rgb) / 0.86);
+    background:
+      linear-gradient(130deg, rgb(var(--quiz-accent-rgb) / 0.12), rgb(255 255 255 / 0.03)),
+      rgb(3 9 18 / 0.7);
     box-shadow: 0 0 26px rgb(var(--quiz-accent-rgb) / 0.24);
   }
 
@@ -439,12 +446,29 @@
   }
 
   .answer-option.correct {
-    border-color: rgb(80 255 180 / 0.82);
-    box-shadow: 0 0 30px rgb(80 255 180 / 0.24);
+    animation: correct-answer-sparkle 600ms ease-out both;
+    background:
+      linear-gradient(130deg, rgb(42 255 126 / 0.2), rgb(85 255 180 / 0.06)), rgb(2 14 12 / 0.76);
+    box-shadow: 0 0 32px rgb(42 255 126 / 0.34);
+  }
+
+  .answer-option.correct::after {
+    position: absolute;
+    inset: -35%;
+    z-index: 2;
+    pointer-events: none;
+    content: '';
+    background:
+      radial-gradient(circle at 28% 38%, rgb(255 255 255 / 0.6) 0 1px, transparent 2px),
+      radial-gradient(circle at 46% 58%, rgb(80 255 180 / 0.55) 0 1px, transparent 2px),
+      radial-gradient(circle at 72% 32%, rgb(var(--quiz-accent-rgb) / 0.5) 0 1px, transparent 2px);
+    opacity: 0;
+    animation: answer-sparkle-wash 600ms ease-out both;
   }
 
   .answer-option.wrong {
-    border-color: rgb(255 83 102 / 0.82);
+    background:
+      linear-gradient(130deg, rgb(255 83 102 / 0.14), rgb(255 255 255 / 0.03)), rgb(3 9 18 / 0.7);
     box-shadow: 0 0 30px rgb(255 83 102 / 0.22);
   }
 
@@ -463,23 +487,88 @@
     transform: scaleX(1);
   }
 
-  .answer-letter,
+  .answer-option.selected .answer-fill {
+    transform: scaleX(1);
+  }
+
+  .answer-option.correct .answer-fill {
+    background: linear-gradient(90deg, rgb(31 255 105 / 0.5), rgb(117 255 178 / 0.2));
+  }
+
+  .answer-correct-particles {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .answer-correct-particle {
+    position: absolute;
+    width: 0.28rem;
+    height: 0.28rem;
+    border-radius: 999px;
+    background: rgb(245 255 230 / 0.9);
+    box-shadow:
+      0 0 8px rgb(80 255 180 / 0.68),
+      0 0 16px rgb(var(--quiz-accent-rgb) / 0.32);
+    opacity: 0;
+    animation: correct-answer-particle 500ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(var(--particle-index) * 24ms);
+  }
+
+  .answer-correct-particle:nth-child(1) {
+    top: 25%;
+    left: 18%;
+    --particle-x: -18px;
+    --particle-y: -22px;
+  }
+
+  .answer-correct-particle:nth-child(2) {
+    top: 68%;
+    left: 24%;
+    --particle-x: -10px;
+    --particle-y: 18px;
+  }
+
+  .answer-correct-particle:nth-child(3) {
+    top: 35%;
+    left: 42%;
+    --particle-x: 12px;
+    --particle-y: -20px;
+  }
+
+  .answer-correct-particle:nth-child(4) {
+    top: 62%;
+    left: 58%;
+    --particle-x: 20px;
+    --particle-y: 14px;
+  }
+
+  .answer-correct-particle:nth-child(5) {
+    top: 28%;
+    left: 76%;
+    --particle-x: 18px;
+    --particle-y: -18px;
+  }
+
+  .answer-correct-particle:nth-child(6) {
+    top: 72%;
+    left: 82%;
+    --particle-x: 24px;
+    --particle-y: 16px;
+  }
+
+  .answer-correct-particle:nth-child(7) {
+    top: 48%;
+    left: 66%;
+    --particle-x: 10px;
+    --particle-y: -26px;
+  }
+
   .answer-text {
     position: relative;
     z-index: 1;
-  }
-
-  .answer-letter {
-    display: inline-flex;
-    width: 2rem;
-    height: 2rem;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid rgb(var(--quiz-accent-rgb) / 0.48);
-    border-radius: 999px;
-    color: var(--quiz-accent);
-    font-size: 0.85rem;
-    font-weight: 700;
   }
 
   .answer-text {
@@ -633,6 +722,49 @@
     }
   }
 
+  @keyframes correct-answer-sparkle {
+    0%,
+    100% {
+      filter: brightness(1);
+    }
+
+    45% {
+      filter: brightness(1.18);
+    }
+  }
+
+  @keyframes answer-sparkle-wash {
+    0% {
+      opacity: 0;
+      transform: translateX(-16%) rotate(-4deg);
+    }
+
+    24% {
+      opacity: 0.78;
+    }
+
+    100% {
+      opacity: 0;
+      transform: translateX(16%) rotate(4deg);
+    }
+  }
+
+  @keyframes correct-answer-particle {
+    0% {
+      opacity: 0;
+      transform: translate(0, 0) scale(0.35);
+    }
+
+    18% {
+      opacity: 0.9;
+    }
+
+    100% {
+      opacity: 0;
+      transform: translate(var(--particle-x), var(--particle-y)) scale(1.45);
+    }
+  }
+
   @keyframes perfect-quake {
     0%,
     100% {
@@ -665,11 +797,6 @@
     .quiz-shell {
       width: min(92vw, 34rem);
       gap: 1.3rem;
-    }
-
-    .answer-grid {
-      grid-template-columns: 1fr;
-      gap: 0.55rem;
     }
 
     .answer-option {

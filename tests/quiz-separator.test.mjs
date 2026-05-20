@@ -75,3 +75,21 @@ test('question progress emphasizes only the current question index', () => {
     'slash and total should avoid loose digit spacing'
   );
 });
+
+test('confirmed correct options keep fill and sparkle lightly', () => {
+  assert.match(
+    source,
+    /\.answer-option\.selected \.answer-fill\s*{[\s\S]*transform:\s*scaleX\(1\);/,
+    'selected answer should keep the hold progress fill expanded'
+  );
+  assert.match(
+    source,
+    /class="answer-correct-particles"[\s\S]*class="answer-correct-particle"/,
+    'correct selected answer should render lightweight particle spans'
+  );
+  assert.match(
+    source,
+    /\.answer-option\.correct::after\s*{[\s\S]*animation:\s*answer-sparkle-wash/,
+    'correct answer should have a light sparkle wash'
+  );
+});
