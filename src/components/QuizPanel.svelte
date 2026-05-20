@@ -186,7 +186,7 @@
   }
 
   function badgeForScore(value: number) {
-    if (value >= 100) return { text: '💎🏆', className: 'diamond' };
+    if (value >= 100) return { text: '🏆', className: 'perfect' };
     if (value >= 90) return { text: '🏆', className: 'gold' };
     if (value >= 80) return { text: '🏆', className: 'silver' };
     if (value >= 70) return { text: '🏆', className: 'bronze' };
@@ -640,8 +640,10 @@
     filter: saturate(1.4) drop-shadow(0 0 30px rgb(255 205 75 / 0.8));
   }
 
-  .score-badge.diamond {
-    animation: diamond-pulse 680ms linear infinite alternate;
+  .score-badge.perfect {
+    font-size: clamp(7rem, 28vw, 15rem);
+    filter: saturate(1.5) drop-shadow(0 0 34px rgb(255 205 75 / 0.95))
+      drop-shadow(0 0 74px rgb(255 255 255 / 0.55));
   }
 
   .score-line {
@@ -724,7 +726,7 @@
   }
 
   .celebrate-perfect {
-    animation: perfect-quake 180ms linear infinite;
+    animation: perfect-quake 180ms linear 12;
   }
 
   @keyframes particle-burst {
@@ -798,18 +800,6 @@
     }
     75% {
       transform: translate(2px, 3px) rotate(-0.4deg);
-    }
-  }
-
-  @keyframes diamond-pulse {
-    from {
-      transform: scale(1) rotate(-2deg);
-      filter: drop-shadow(0 0 20px rgb(var(--quiz-accent-rgb) / 0.86));
-    }
-    to {
-      transform: scale(1.12) rotate(2deg);
-      filter: drop-shadow(0 0 24px rgb(var(--quiz-accent-rgb) / 0.95))
-        drop-shadow(0 0 54px rgb(255 255 255 / 0.55));
     }
   }
 

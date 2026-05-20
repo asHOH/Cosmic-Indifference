@@ -134,3 +134,22 @@ test('confirmed correct options keep fill and sparkle lightly', () => {
     'correct answer should have a light sparkle wash'
   );
 });
+
+test('perfect score uses an oversized gold trophy and finite shake', () => {
+  assert.match(
+    source,
+    /if \(value >= 100\) return { text: '🏆', className: 'perfect' };/,
+    'perfect score should show only a trophy badge'
+  );
+  assert.doesNotMatch(source, /💎🏆/, 'perfect score should not include the diamond emoji');
+  assert.match(
+    source,
+    /\.score-badge\.perfect\s*{[\s\S]*font-size:\s*clamp\(7rem,\s*28vw,\s*15rem\);[\s\S]*filter:\s*saturate\(1\.5\)/,
+    'perfect score trophy should be exceptionally large and gold'
+  );
+  assert.match(
+    source,
+    /\.celebrate-perfect\s*{[\s\S]*animation:\s*perfect-quake 180ms linear 12;/,
+    'perfect score shaking should stop after about 2 seconds'
+  );
+});
