@@ -6,6 +6,10 @@ const source = await readFile(
   new URL('../src/components/QuizPanel.svelte', import.meta.url),
   'utf8'
 );
+const answerSparkleSource = await readFile(
+  new URL('../src/components/AnswerSparkle.svelte', import.meta.url),
+  'utf8'
+);
 
 test('quiz lyric separators are rendered as subdued spans in prompts and options', () => {
   assert.match(
@@ -124,7 +128,7 @@ test('confirmed correct options keep fill and sparkle lightly', () => {
     'selected answer should keep the hold progress fill expanded'
   );
   assert.match(
-    source,
+    answerSparkleSource,
     /class="answer-correct-particles"[\s\S]*class="answer-correct-particle"/,
     'correct selected answer should render lightweight particle spans'
   );

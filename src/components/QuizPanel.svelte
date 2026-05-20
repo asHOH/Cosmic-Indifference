@@ -1,6 +1,8 @@
 <script lang="ts">
   import { onDestroy } from 'svelte';
   import { fade } from 'svelte/transition';
+  import AnswerSparkle from './AnswerSparkle.svelte';
+  import ParticleBurst from './ParticleBurst.svelte';
   import RollButton from './RollButton.svelte';
   import { createQuiz, type QuizOption, type QuizQuestion } from '../data/quiz';
   import { bucketForQuizScore, quizResultComments } from '../data/quiz-result-comments';
@@ -28,7 +30,6 @@
   const ANSWER_ADVANCE_DELAY_MS = 700;
   const RESULT_ADVANCE_DELAY_MS = 1500;
   const SCORE_PER_QUESTION = 10;
-  const correctAnswerParticles = Array.from({ length: 7 }, (_, index) => index);
   const modestGlyphs = ['✦', '✧', '•'];
   const perfectGlyphs = ['✦', '✧', '◆', '◇', '✺', '✹', '✷', '✶', '◈'];
 
@@ -270,11 +271,7 @@
               {/each}
             </span>
             {#if selectedOptionId === option.id && option.correct}
-              <span class="answer-correct-particles" aria-hidden="true">
-                {#each correctAnswerParticles as particle}
-                  <span class="answer-correct-particle" style="--particle-index: {particle}"></span>
-                {/each}
-              </span>
+              <AnswerSparkle />
             {/if}
           </button>
         {/each}
@@ -287,18 +284,7 @@
       class:celebrate-perfect={celebration === 'perfect'}
       aria-live="polite"
     >
-      {#if visibleParticles.length > 0}
-        <div class="celebration-field" aria-hidden="true">
-          {#each visibleParticles as particle (particle.id)}
-            <span
-              class="particle"
-              style="--x: {particle.x}px; --y: {particle.y}px; --spin: {particle.spin}deg; --delay: {particle.delay}ms; --size: {particle.size}"
-            >
-              {particle.glyph}
-            </span>
-          {/each}
-        </div>
-      {/if}
+      <ParticleBurst particles={visibleParticles} perfect={celebration === 'perfect'} />
 
       <div class="score-badge {resultBadge.className}">{resultBadge.text}</div>
       <p class="score-line">{score}</p>
@@ -514,77 +500,6 @@
     background: linear-gradient(90deg, rgb(31 255 105 / 0.5), rgb(117 255 178 / 0.2));
   }
 
-  .answer-correct-particles {
-    position: absolute;
-    inset: 0;
-    z-index: 3;
-    overflow: hidden;
-    pointer-events: none;
-  }
-
-  .answer-correct-particle {
-    position: absolute;
-    width: 0.28rem;
-    height: 0.28rem;
-    border-radius: 999px;
-    background: rgb(245 255 230 / 0.9);
-    box-shadow:
-      0 0 8px rgb(80 255 180 / 0.68),
-      0 0 16px rgb(var(--quiz-accent-rgb) / 0.32);
-    opacity: 0;
-    animation: correct-answer-particle 500ms cubic-bezier(0.16, 1, 0.3, 1) both;
-    animation-delay: calc(var(--particle-index) * 24ms);
-  }
-
-  .answer-correct-particle:nth-child(1) {
-    top: 25%;
-    left: 18%;
-    --particle-x: -18px;
-    --particle-y: -22px;
-  }
-
-  .answer-correct-particle:nth-child(2) {
-    top: 68%;
-    left: 24%;
-    --particle-x: -10px;
-    --particle-y: 18px;
-  }
-
-  .answer-correct-particle:nth-child(3) {
-    top: 35%;
-    left: 42%;
-    --particle-x: 12px;
-    --particle-y: -20px;
-  }
-
-  .answer-correct-particle:nth-child(4) {
-    top: 62%;
-    left: 58%;
-    --particle-x: 20px;
-    --particle-y: 14px;
-  }
-
-  .answer-correct-particle:nth-child(5) {
-    top: 28%;
-    left: 76%;
-    --particle-x: 18px;
-    --particle-y: -18px;
-  }
-
-  .answer-correct-particle:nth-child(6) {
-    top: 72%;
-    left: 82%;
-    --particle-x: 24px;
-    --particle-y: 16px;
-  }
-
-  .answer-correct-particle:nth-child(7) {
-    top: 48%;
-    left: 66%;
-    --particle-x: 10px;
-    --particle-y: -26px;
-  }
-
   .answer-text {
     position: relative;
     z-index: 1;
@@ -699,49 +614,8 @@
     height: 1.45rem;
   }
 
-  .celebration-field {
-    position: absolute;
-    inset: -40vh -30vw;
-    pointer-events: none;
-  }
-
-  .particle {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    color: var(--quiz-accent-bright);
-    font-size: calc(1rem * var(--size));
-    opacity: 0;
-    animation: particle-burst 1500ms cubic-bezier(0.16, 1, 0.3, 1) infinite;
-    animation-delay: var(--delay);
-    text-shadow: 0 0 14px currentColor;
-  }
-
-  .celebrate-perfect .particle {
-    color: hsl(calc(var(--spin) + 220) 95% 72%);
-    animation-duration: 900ms;
-    text-shadow:
-      0 0 12px currentColor,
-      0 0 30px currentColor;
-  }
-
   .celebrate-perfect {
     animation: perfect-quake 180ms linear 12;
-  }
-
-  @keyframes particle-burst {
-    0% {
-      opacity: 0;
-      transform: translate(-50%, -50%) scale(0.3) rotate(0deg);
-    }
-    12% {
-      opacity: 1;
-    }
-    100% {
-      opacity: 0;
-      transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) scale(1.7)
-        rotate(var(--spin));
-    }
   }
 
   @keyframes correct-answer-sparkle {
@@ -768,22 +642,6 @@
     100% {
       opacity: 0;
       transform: translateX(16%) rotate(4deg);
-    }
-  }
-
-  @keyframes correct-answer-particle {
-    0% {
-      opacity: 0;
-      transform: translate(0, 0) scale(0.35);
-    }
-
-    18% {
-      opacity: 0.9;
-    }
-
-    100% {
-      opacity: 0;
-      transform: translate(var(--particle-x), var(--particle-y)) scale(1.45);
     }
   }
 
