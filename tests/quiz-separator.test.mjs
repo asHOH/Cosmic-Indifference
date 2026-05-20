@@ -43,6 +43,19 @@ test('prompt lyric text is larger without changing separators or surrounding pro
   );
 });
 
+test('prompt separators outside quoted lyrics use the subdued slash style', () => {
+  assert.match(
+    source,
+    /parts\.push\(\.\.\.lyricTextParts\(text\.slice\(cursor,\s*match\.index\)\)\);/,
+    'prompt text before a quoted lyric should still split slash separators'
+  );
+  assert.match(
+    source,
+    /parts\.push\(\.\.\.lyricTextParts\(text\.slice\(cursor\)\)\);/,
+    'prompt text after quoted lyrics should still split slash separators'
+  );
+});
+
 test('question progress emphasizes only the current question index', () => {
   assert.match(
     source,

@@ -82,17 +82,15 @@
       const isLyricQuote = !text.slice(quoteEnd).startsWith('这首歌');
 
       if (match.index > cursor) {
-        parts.push({ text: text.slice(cursor, match.index), isSeparator: false });
+        parts.push(...lyricTextParts(text.slice(cursor, match.index)));
       }
 
-      parts.push({ text: '“', isSeparator: false });
       parts.push(...lyricTextParts(quotedContent, isLyricQuote));
-      parts.push({ text: '”', isSeparator: false });
       cursor = quoteEnd;
     }
 
     if (cursor < text.length) {
-      parts.push({ text: text.slice(cursor), isSeparator: false });
+      parts.push(...lyricTextParts(text.slice(cursor)));
     }
 
     return parts.length > 0 ? parts : lyricTextParts(text);

@@ -42,10 +42,16 @@ test('lyric memory questions skip tilde interjections when looking for neighbori
   assert.notEqual(targetIndex, -1, 'fixture should contain 崩溃的东西 as an official target');
 
   const targetRoll = (targetIndex + 0.1) / officialTargets.length;
-  const [question] = generateQuiz(parsed, queuedRandom([targetRoll, 0.75]));
+  const [nextQuestion] = generateQuiz(parsed, queuedRandom([targetRoll, 0.25]));
+  const [previousQuestion] = generateQuiz(parsed, queuedRandom([targetRoll, 0.75]));
 
-  assert.equal(question.kind, 'lyric');
-  assert.equal(question.prompt, '“其实就是 / 宇宙冷漠”的上一句歌词是什么？');
-  assert.equal(question.answer, '崩溃的东西');
-  assert.equal(question.options.find((option) => option.correct)?.text, '崩溃的东西');
+  assert.equal(nextQuestion.kind, 'lyric');
+  assert.equal(nextQuestion.prompt, '“最 最能够让人” / ________');
+  assert.equal(nextQuestion.answer, '崩溃的东西');
+  assert.equal(nextQuestion.options.find((option) => option.correct)?.text, '崩溃的东西');
+
+  assert.equal(previousQuestion.kind, 'lyric');
+  assert.equal(previousQuestion.prompt, '________ / “其实就是 / 宇宙冷漠”');
+  assert.equal(previousQuestion.answer, '崩溃的东西');
+  assert.equal(previousQuestion.options.find((option) => option.correct)?.text, '崩溃的东西');
 });

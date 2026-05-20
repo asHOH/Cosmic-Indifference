@@ -294,7 +294,7 @@ function lyricQuestionCandidates(parsed: ParsedQuizSources, target: QuizLyric) {
     const prompt = contextPrompt(lyrics, previousPrompt, 'next');
     if (prompt) {
       candidates.push({
-        prompt: `${prompt}的下一句歌词是什么？`,
+        prompt: `${prompt} / ________`,
         target,
       });
     }
@@ -305,7 +305,7 @@ function lyricQuestionCandidates(parsed: ParsedQuizSources, target: QuizLyric) {
     const prompt = contextPrompt(lyrics, nextPrompt, 'previous');
     if (prompt) {
       candidates.push({
-        prompt: `${prompt}的上一句歌词是什么？`,
+        prompt: `________ / ${prompt}`,
         target,
       });
     }
