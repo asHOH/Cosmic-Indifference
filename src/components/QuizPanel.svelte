@@ -609,7 +609,7 @@
   }
 
   .score-badge.perfect {
-    font-size: clamp(7rem, 28vw, 15rem);
+    font-size: clamp(9rem, 34vw, 20rem);
     filter: saturate(1.5) drop-shadow(0 0 34px rgb(255 205 75 / 0.95))
       drop-shadow(0 0 74px rgb(255 255 255 / 0.55));
   }
@@ -621,6 +621,10 @@
     font-weight: 800;
     line-height: 1;
     text-shadow: 0 0 26px rgb(var(--quiz-accent-rgb) / 0.44);
+  }
+
+  .celebrate-perfect .score-line {
+    font-size: clamp(3.3rem, 12vw, 6.4rem);
   }
 
   .result-comment {

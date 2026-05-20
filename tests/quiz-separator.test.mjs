@@ -148,8 +148,13 @@ test('perfect score uses an oversized gold trophy and finite shake', () => {
   assert.doesNotMatch(source, /💎🏆/, 'perfect score should not include the diamond emoji');
   assert.match(
     source,
-    /\.score-badge\.perfect\s*{[\s\S]*font-size:\s*clamp\(7rem,\s*28vw,\s*15rem\);[\s\S]*filter:\s*saturate\(1\.5\)/,
+    /\.score-badge\.perfect\s*{[\s\S]*font-size:\s*clamp\(9rem,\s*34vw,\s*20rem\);[\s\S]*filter:\s*saturate\(1\.5\)/,
     'perfect score trophy should be exceptionally large and gold'
+  );
+  assert.match(
+    source,
+    /\.celebrate-perfect \.score-line\s*{[\s\S]*font-size:\s*clamp\(3\.3rem,\s*12vw,\s*6\.4rem\);/,
+    'perfect score number should be larger than regular result scores'
   );
   assert.match(
     source,
