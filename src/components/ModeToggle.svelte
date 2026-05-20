@@ -9,10 +9,29 @@
 
 <button
   type="button"
-  class="fixed top-5 right-5 z-30 flex h-11 w-11 items-center justify-center text-[#95cdfe] transition hover:scale-105 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[#95cdfe]"
+  class="mode-toggle fixed top-5 right-5 z-30 flex h-11 w-11 items-center justify-center transition hover:scale-105 hover:text-white focus:outline-none focus-visible:ring-2"
+  class:quiz-mode={mode === 'quiz'}
   aria-label={label}
   title={label}
   on:click={onToggle}
 >
   <RefreshCw aria-hidden="true" class="h-7 w-7" strokeWidth={2} />
 </button>
+
+<style>
+  .mode-toggle {
+    color: #95cdfe;
+  }
+
+  .mode-toggle:focus-visible {
+    --tw-ring-color: #95cdfe;
+  }
+
+  .mode-toggle.quiz-mode {
+    color: #ffd166;
+  }
+
+  .mode-toggle.quiz-mode:focus-visible {
+    --tw-ring-color: #ffd166;
+  }
+</style>

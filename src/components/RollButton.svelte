@@ -126,13 +126,13 @@
   button {
     position: relative;
     padding: 12px 35px;
-    background: #95cdfe;
+    background: var(--roll-button-color, #95cdfe);
     font-size: 17px;
     font-weight: 500;
     color: #000000;
-    border: 3px solid #95cdfe;
+    border: 3px solid var(--roll-button-color, #95cdfe);
     border-radius: 8px;
-    box-shadow: 0 0 0 #95cdfe8c;
+    box-shadow: 0 0 0 var(--roll-button-glow, #95cdfe8c);
     transition: all 0.5s ease-in-out;
     cursor: pointer;
   }
@@ -205,8 +205,8 @@
 
   button:hover {
     background: transparent;
-    color: #95cdfe;
-    box-shadow: 0 0 25px #95cdfe8c;
+    color: var(--roll-button-color, #95cdfe);
+    box-shadow: 0 0 25px var(--roll-button-glow, #95cdfe8c);
   }
 
   button:hover .star-1 {
