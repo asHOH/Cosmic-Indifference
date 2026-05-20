@@ -230,7 +230,6 @@
             {'  '}/{progressTotal}</span
           >
         </span>
-        <span>{score}</span>
       </div>
 
       <h1 class="question-prompt">
