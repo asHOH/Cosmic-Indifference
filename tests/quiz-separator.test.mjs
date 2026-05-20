@@ -158,7 +158,12 @@ test('perfect score uses an oversized gold trophy and finite shake', () => {
   );
   assert.match(
     source,
-    /\.celebrate-perfect\s*{[\s\S]*animation:\s*perfect-quake 180ms linear 12;/,
-    'perfect score shaking should stop after about 2 seconds'
+    /\.celebrate-perfect\s*{[\s\S]*animation:\s*perfect-quake 120ms linear 18;/,
+    'perfect score shaking should stay finite while feeling more intense'
+  );
+  assert.match(
+    source,
+    /@keyframes perfect-quake[\s\S]*translate\(9px,\s*-7px\) rotate\(-2\.4deg\) scale\(1\.015\)[\s\S]*translate\(-8px,\s*7px\) rotate\(2\.2deg\) scale\(0\.992\)/,
+    'perfect score shaking should use stronger movement, rotation, and scale pulses'
   );
 });

@@ -672,7 +672,8 @@
   }
 
   .celebrate-perfect {
-    animation: perfect-quake 180ms linear 12;
+    animation: perfect-quake 120ms linear 18;
+    transform-origin: center;
   }
 
   @keyframes correct-answer-sparkle {
@@ -705,16 +706,28 @@
   @keyframes perfect-quake {
     0%,
     100% {
-      transform: translate(0, 0) rotate(0deg);
+      transform: translate(0, 0) rotate(0deg) scale(1);
+    }
+    12.5% {
+      transform: translate(9px, -7px) rotate(-2.4deg) scale(1.015);
     }
     25% {
-      transform: translate(3px, -2px) rotate(-0.7deg);
+      transform: translate(-7px, 5px) rotate(1.7deg) scale(0.995);
+    }
+    37.5% {
+      transform: translate(8px, 6px) rotate(-1.8deg) scale(1.012);
     }
     50% {
-      transform: translate(-2px, 2px) rotate(0.9deg);
+      transform: translate(-8px, 7px) rotate(2.2deg) scale(0.992);
+    }
+    62.5% {
+      transform: translate(7px, -6px) rotate(-2deg) scale(1.01);
     }
     75% {
-      transform: translate(2px, 3px) rotate(-0.4deg);
+      transform: translate(-6px, -5px) rotate(1.8deg) scale(0.996);
+    }
+    87.5% {
+      transform: translate(5px, 4px) rotate(-1.2deg) scale(1.006);
     }
   }
 
