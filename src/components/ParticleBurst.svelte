@@ -1,4 +1,7 @@
 <script lang="ts">
+  import { onDestroy, onMount } from 'svelte';
+  import type confetti from 'canvas-confetti';
+
   type Particle = {
     id: number;
     x: number;
@@ -8,6 +11,8 @@
     size: number;
     glyph: string;
   };
+  type ConfettiOptions = NonNullable<Parameters<typeof confetti>[0]>;
+  type ConfettiFunction = typeof confetti;
 
   export let particles: Particle[] = [];
   export let perfect = false;
@@ -29,15 +34,104 @@
     size: 0.62 + (id % 5) * 0.13,
     travel: 165 + (id % 6) * 18,
   }));
-  const confettiShards = Array.from({ length: 54 }, (_, id) => ({
+  const confettiShards = Array.from({ length: 108 }, (_, id) => ({
     id,
-    x: (id * 17) % 100,
-    drift: ((id % 9) - 4) * 2.4,
-    delay: 520 + (id % 18) * 42,
-    duration: 1350 + (id % 7) * 135,
+    x: (id * 11) % 100,
+    drift: ((id % 11) - 5) * 2.7,
+    delay: 340 + (id % 24) * 24,
+    duration: 1650 + (id % 7) * 115,
     hue: 38 + ((id * 47) % 280),
     spin: 180 + (id % 8) * 64,
   }));
+
+  let confettiInstance: ConfettiFunction | undefined;
+  let confettiStarted = false;
+  const confettiTimers: ReturnType<typeof setTimeout>[] = [];
+  const cupConfettiColors = ['#fff4bf', '#ffd166', '#ff4d8d', '#4de3ff', '#7cff6b', '#b38cff'];
+
+  function clearConfettiTimers() {
+    while (confettiTimers.length > 0) {
+      clearTimeout(confettiTimers.pop());
+    }
+  }
+
+  function fireCupConfetti(options: ConfettiOptions) {
+    confettiInstance?.({
+      colors: cupConfettiColors,
+      decay: 0.91,
+      disableForReducedMotion: true,
+      scalar: 1.05,
+      ticks: 260,
+      zIndex: 30,
+      ...options,
+    });
+  }
+
+  function launchPerfectConfetti() {
+    clearConfettiTimers();
+
+    fireCupConfetti({
+      particleCount: 120,
+      spread: 92,
+      startVelocity: 76,
+      gravity: 1.12,
+      origin: { x: 0.5, y: 0.48 },
+    });
+
+    confettiTimers.push(
+      setTimeout(() => {
+        fireCupConfetti({
+          angle: 76,
+          particleCount: 86,
+          spread: 74,
+          startVelocity: 68,
+          gravity: 1.04,
+          origin: { x: 0.46, y: 0.48 },
+        });
+      }, 180)
+    );
+
+    confettiTimers.push(
+      setTimeout(() => {
+        fireCupConfetti({
+          angle: 104,
+          particleCount: 86,
+          spread: 74,
+          startVelocity: 68,
+          gravity: 1.04,
+          origin: { x: 0.54, y: 0.48 },
+        });
+      }, 260)
+    );
+  }
+
+  $: if (perfect && confettiInstance && !confettiStarted) {
+    confettiStarted = true;
+    launchPerfectConfetti();
+  }
+
+  $: if (!perfect) {
+    confettiStarted = false;
+    clearConfettiTimers();
+  }
+
+  onMount(() => {
+    let cancelled = false;
+
+    import('canvas-confetti').then(({ default: loadedConfetti }) => {
+      if (!cancelled) {
+        confettiInstance = loadedConfetti;
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  });
+
+  onDestroy(() => {
+    clearConfettiTimers();
+  });
 </script>
 
 {#if perfect}
@@ -70,12 +164,11 @@
   </div>
 {/if}
 
-{#if particles.length > 0}
+{#if particles.length > 0 && !perfect}
   <div class="celebration-field" aria-hidden="true">
     {#each particles as particle (particle.id)}
       <span
         class="particle"
-        class:perfect
         style="--x: {particle.x}px; --y: {particle.y}px; --spin: {particle.spin}deg; --delay: {particle.delay}ms; --size: {particle.size}"
       >
         {particle.glyph}
@@ -110,14 +203,6 @@
     animation: particle-burst 1500ms cubic-bezier(0.16, 1, 0.3, 1) infinite;
     animation-delay: var(--delay);
     text-shadow: 0 0 14px currentColor;
-  }
-
-  .particle.perfect {
-    color: hsl(calc(var(--spin) + 220) 95% 72%);
-    animation-duration: 680ms;
-    text-shadow:
-      0 0 12px currentColor,
-      0 0 30px currentColor;
   }
 
   .beam-wheel {

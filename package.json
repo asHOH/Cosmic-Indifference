@@ -20,12 +20,14 @@
     "@lucide/svelte": "^1.16.0",
     "@tailwindcss/vite": "^4.3.0",
     "astro": "^6.3.1",
+    "canvas-confetti": "^1.9.4",
     "smol-toml": "^1.6.1",
     "svelte": "^5.55.5",
     "tailwindcss": "^4.3.0",
     "typescript": "^5.9.3"
   },
   "devDependencies": {
+    "@types/canvas-confetti": "^1.9.0",
     "lefthook": "^2.1.6",
     "prettier": "^3.8.3",
     "prettier-plugin-astro": "^0.14.1",

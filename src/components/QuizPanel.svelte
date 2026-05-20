@@ -31,7 +31,6 @@
   const RESULT_ADVANCE_DELAY_MS = 1500;
   const SCORE_PER_QUESTION = 10;
   const modestGlyphs = ['✦', '✧', '•'];
-  const perfectGlyphs = ['✦', '✧', '◆', '◇', '✺', '✹', '✷', '✶', '◈'];
   const showPerfectDebug = import.meta.env.DEV;
 
   let state: QuizState = 'Idle';
@@ -158,17 +157,15 @@
     return comments[Math.floor(Math.random() * comments.length)];
   }
 
-  function makeParticles(kind: 'modest' | 'perfect') {
-    const glyphs = kind === 'perfect' ? perfectGlyphs : modestGlyphs;
-    const count = kind === 'perfect' ? 220 : 30;
-    return Array.from({ length: count }, (_, id) => ({
+  function makeParticles() {
+    return Array.from({ length: 30 }, (_, id) => ({
       id,
       x: Math.random() * 220 - 110,
       y: Math.random() * 180 - 120,
       spin: Math.random() * 720 - 360,
-      delay: Math.random() * (kind === 'perfect' ? 900 : 360),
-      size: kind === 'perfect' ? 0.75 + Math.random() * 1.65 : 0.75 + Math.random() * 0.75,
-      glyph: glyphs[Math.floor(Math.random() * glyphs.length)],
+      delay: Math.random() * 360,
+      size: 0.75 + Math.random() * 0.75,
+      glyph: modestGlyphs[Math.floor(Math.random() * modestGlyphs.length)],
     }));
   }
 
@@ -179,7 +176,7 @@
     resultComment = selectComment(score);
     showAdvance = false;
     celebration = score === 100 ? 'perfect' : score >= 60 ? 'modest' : 'none';
-    particles = celebration === 'none' ? [] : makeParticles(celebration);
+    particles = celebration === 'modest' ? makeParticles() : [];
 
     clearTimeout(resultTimer);
     resultTimer = setTimeout(() => {
@@ -200,7 +197,7 @@
     resultComment = selectComment(100);
     showAdvance = true;
     celebration = 'perfect';
-    particles = makeParticles('perfect');
+    particles = [];
     onStart();
   }
 
