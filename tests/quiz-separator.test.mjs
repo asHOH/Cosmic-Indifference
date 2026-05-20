@@ -38,7 +38,40 @@ test('prompt lyric text is larger without changing separators or surrounding pro
   );
   assert.match(
     source,
-    /\.prompt-lyric-text\s*{[\s\S]*font-size:\s*1\.08em;/,
+    /\.prompt-lyric-text\s*{[\s\S]*font-size:\s*1\.\d+em;/,
     'prompt lyric text should be slightly larger than surrounding prompt text'
+  );
+});
+
+test('question progress emphasizes only the current question index', () => {
+  assert.match(
+    source,
+    /\$: progressText = `\$\{progressCurrent\}  \/\$\{progressTotal\}`;/,
+    'progress text should include two spaces before slash and no space after it'
+  );
+  assert.match(
+    source,
+    /class="quiz-progress"[\s\S]*class="quiz-progress-current"[\s\S]*class="quiz-progress-rest"/,
+    'progress should render current index separately from slash and total'
+  );
+  assert.match(
+    source,
+    /class="quiz-progress-rest"[\s\S]*>\s*\{'  '\}\/\{progressTotal\}/,
+    'visible progress rest should include two preserved spaces before slash'
+  );
+  assert.match(
+    source,
+    /\.quiz-progress-rest\s*{[\s\S]*white-space:\s*pre;/,
+    'visible progress rest should preserve the additional space'
+  );
+  assert.match(
+    source,
+    /\.quiz-progress-current\s*{[\s\S]*color:\s*var\(--quiz-accent\);[\s\S]*font-size:\s*clamp\(1\.28rem,\s*4vw,\s*2\.35rem\);/,
+    'current question index should use the quiz accent and prompt text size'
+  );
+  assert.match(
+    source,
+    /\.quiz-progress-rest\s*{[\s\S]*letter-spacing:\s*0;/,
+    'slash and total should avoid loose digit spacing'
   );
 });

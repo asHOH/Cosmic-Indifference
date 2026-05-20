@@ -50,7 +50,9 @@
   $: currentQuestion = questions[currentIndex];
   $: currentOptions = currentQuestion?.options ?? [];
   $: visibleParticles = particles;
-  $: progressText = `${Math.min(currentIndex + 1, questions.length)} / ${questions.length}`;
+  $: progressCurrent = Math.min(currentIndex + 1, questions.length);
+  $: progressTotal = questions.length;
+  $: progressText = `${progressCurrent}  /${progressTotal}`;
   $: resultBadge = badgeForScore(score);
 
   const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -221,7 +223,13 @@
   {:else if state === 'Question' && currentQuestion}
     <section class="question-panel" aria-live="polite">
       <div class="quiz-meta">
-        <span>{progressText}</span>
+        <span class="quiz-progress" aria-label={progressText}>
+          <span class="quiz-progress-current">{progressCurrent}</span><span
+            class="quiz-progress-rest"
+          >
+            {'  '}/{progressTotal}</span
+          >
+        </span>
         <span>{score}</span>
       </div>
 
@@ -347,11 +355,31 @@
   .quiz-meta {
     display: flex;
     justify-content: space-between;
+    align-items: baseline;
     margin-bottom: 1.2rem;
     color: rgb(255 255 255 / 0.58);
     font-size: clamp(0.88rem, 2.2vw, 1rem);
     font-weight: 500;
     letter-spacing: 0.16em;
+  }
+
+  .quiz-progress {
+    display: inline-flex;
+    align-items: baseline;
+    letter-spacing: 0;
+  }
+
+  .quiz-progress-current {
+    color: var(--quiz-accent);
+    font-size: clamp(1.28rem, 4vw, 2.35rem);
+    font-weight: 700;
+    line-height: 1;
+    text-shadow: 0 0 18px rgb(var(--quiz-accent-rgb) / 0.28);
+  }
+
+  .quiz-progress-rest {
+    letter-spacing: 0;
+    white-space: pre;
   }
 
   .question-prompt {
