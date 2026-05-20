@@ -159,7 +159,7 @@
 
   function makeParticles(kind: 'modest' | 'perfect') {
     const glyphs = kind === 'perfect' ? perfectGlyphs : modestGlyphs;
-    const count = kind === 'perfect' ? 120 : 30;
+    const count = kind === 'perfect' ? 220 : 30;
     return Array.from({ length: count }, (_, id) => ({
       id,
       x: Math.random() * 220 - 110,

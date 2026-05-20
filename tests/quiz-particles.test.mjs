@@ -65,3 +65,35 @@ test('particle burst component owns result celebration field animation', async (
     'particle burst should own the burst animation'
   );
 });
+
+test('perfect particle burst adds phased overdrive layers', async () => {
+  const source = await readFile(
+    new URL('../src/components/ParticleBurst.svelte', import.meta.url),
+    'utf8'
+  );
+
+  assert.match(
+    source,
+    /{#if perfect}[\s\S]*class="perfect-overdrive"/,
+    'perfect score should render a dedicated overdrive layer'
+  );
+  assert.match(source, /class="shockwave"/, 'perfect overdrive should include shockwave rings');
+  assert.match(source, /class="beam"/, 'perfect overdrive should include rotating light beams');
+  assert.match(source, /class="comet"/, 'perfect overdrive should include radial comets');
+  assert.match(
+    source,
+    /class="confetti-shard"/,
+    'perfect overdrive should include delayed confetti shards'
+  );
+  assert.match(source, /@keyframes shockwave-pulse/, 'shockwave phase should be animated');
+  assert.match(source, /@keyframes comet-launch/, 'comet phase should be animated');
+  assert.match(source, /@keyframes confetti-fall/, 'confetti phase should be animated');
+});
+
+test('perfect score generates a denser particle field', () => {
+  assert.match(
+    quizPanelSource,
+    /const count = kind === 'perfect' \? 220 : 30;/,
+    'perfect score should use a much denser particle field than modest celebrations'
+  );
+});
