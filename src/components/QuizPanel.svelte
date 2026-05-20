@@ -32,6 +32,7 @@
   const SCORE_PER_QUESTION = 10;
   const modestGlyphs = ['✦', '✧', '•'];
   const perfectGlyphs = ['✦', '✧', '◆', '◇', '✺', '✹', '✷', '✶', '◈'];
+  const showPerfectDebug = import.meta.env.DEV;
 
   let state: QuizState = 'Idle';
   let questions: QuizQuestion[] = [];
@@ -186,6 +187,23 @@
     }, RESULT_ADVANCE_DELAY_MS);
   }
 
+  function showPerfectDebugResult() {
+    clearHold();
+    clearTimeout(resultTimer);
+    state = 'Result';
+    questions = [];
+    currentIndex = 0;
+    score = 100;
+    selectedOptionId = '';
+    pressingOptionId = '';
+    answeringLocked = false;
+    resultComment = selectComment(100);
+    showAdvance = true;
+    celebration = 'perfect';
+    particles = makeParticles('perfect');
+    onStart();
+  }
+
   function badgeForScore(value: number) {
     if (value >= 100) return { text: '🏆', className: 'perfect' };
     if (value >= 90) return { text: '🏆', className: 'gold' };
@@ -221,6 +239,17 @@
     >
       我有所了解
     </RollButton>
+
+    {#if showPerfectDebug}
+      <button
+        type="button"
+        class="perfect-debug-button"
+        aria-label="Debug perfect score animation"
+        on:click={showPerfectDebugResult}
+      >
+        Debug Perfect
+      </button>
+    {/if}
   {:else if state === 'Question' && currentQuestion}
     <section class="question-panel" aria-live="polite">
       <div class="quiz-meta">
@@ -340,6 +369,33 @@
 
   .quiz-stage {
     width: min(88vw, 720px);
+  }
+
+  .perfect-debug-button {
+    position: absolute;
+    right: 0;
+    bottom: -4.4rem;
+    border: 1px solid rgb(var(--quiz-accent-rgb) / 0.42);
+    border-radius: 999px;
+    background: rgb(0 0 0 / 0.36);
+    color: rgb(255 255 255 / 0.72);
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.45rem 0.7rem;
+    text-transform: uppercase;
+    transition:
+      border-color 160ms ease,
+      color 160ms ease,
+      box-shadow 160ms ease,
+      transform 160ms ease;
+  }
+
+  .perfect-debug-button:hover {
+    border-color: rgb(var(--quiz-accent-rgb) / 0.78);
+    color: white;
+    box-shadow: 0 0 18px rgb(var(--quiz-accent-rgb) / 0.28);
+    transform: translateY(-1px);
   }
 
   .question-panel,

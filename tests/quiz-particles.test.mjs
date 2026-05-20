@@ -97,3 +97,21 @@ test('perfect score generates a denser particle field', () => {
     'perfect score should use a much denser particle field than modest celebrations'
   );
 });
+
+test('perfect animation debug trigger is development-only', () => {
+  assert.match(
+    quizPanelSource,
+    /const showPerfectDebug = import\.meta\.env\.DEV;/,
+    'debug trigger should use the build-mode development flag'
+  );
+  assert.match(
+    quizPanelSource,
+    /function showPerfectDebugResult\(\)[\s\S]*score = 100;[\s\S]*celebration = 'perfect';[\s\S]*particles = makeParticles\('perfect'\);/,
+    'debug trigger should jump directly to the perfect result animation'
+  );
+  assert.match(
+    quizPanelSource,
+    /{#if showPerfectDebug}[\s\S]*class="perfect-debug-button"[\s\S]*on:click=\{showPerfectDebugResult\}/,
+    'debug button should render only when the development flag is true'
+  );
+});
