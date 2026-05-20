@@ -23,6 +23,11 @@ test('quiz lyric separators are rendered as subdued spans in prompts and options
     /\.lyric-separator\s*{[\s\S]*font-size:\s*0\.72em;[\s\S]*opacity:\s*0\.42;/,
     'separator styling should make slash smaller and more transparent'
   );
+  assert.match(
+    source,
+    /\.lyric-separator\s*{[\s\S]*margin-inline:\s*0\.4em;/,
+    'separator should render visual spacing around itself'
+  );
 });
 
 test('prompt lyric text is larger without changing separators or surrounding prompt text', () => {

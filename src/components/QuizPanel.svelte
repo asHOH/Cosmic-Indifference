@@ -602,6 +602,7 @@
     display: inline-block;
     font-size: 0.72em;
     font-weight: 400;
+    margin-inline: 0.4em;
     opacity: 0.42;
     text-shadow: none;
     transform: translateY(-0.04em);
