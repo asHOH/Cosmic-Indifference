@@ -24,3 +24,21 @@ test('quiz lyric separators are rendered as subdued spans in prompts and options
     'separator styling should make slash smaller and more transparent'
   );
 });
+
+test('prompt lyric text is larger without changing separators or surrounding prompt text', () => {
+  assert.match(
+    source,
+    /class="question-prompt"[\s\S]*promptTextParts\(currentQuestion\.prompt\)[\s\S]*class="prompt-lyric-text"/,
+    'prompt should render lyric text with a prompt-only lyric class'
+  );
+  assert.doesNotMatch(
+    source,
+    /class="answer-text"[\s\S]*class="prompt-lyric-text"/,
+    'option text should not use prompt lyric sizing'
+  );
+  assert.match(
+    source,
+    /\.prompt-lyric-text\s*{[\s\S]*font-size:\s*1\.08em;/,
+    'prompt lyric text should be slightly larger than surrounding prompt text'
+  );
+});

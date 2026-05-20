@@ -21,6 +21,7 @@
   type LyricTextPart = {
     text: string;
     isSeparator: boolean;
+    isPromptLyric?: boolean;
   };
 
   const HOLD_CONFIRM_MS = 500;
@@ -54,14 +55,43 @@
 
   const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-  function lyricTextParts(text: string): LyricTextPart[] {
+  function lyricTextParts(text: string, isPromptLyric = false): LyricTextPart[] {
     return text
       .split(/(\/)/)
       .filter(Boolean)
       .map((part) => ({
         text: part,
         isSeparator: part === '/',
+        isPromptLyric: part !== '/' && isPromptLyric,
       }));
+  }
+
+  function promptTextParts(text: string): LyricTextPart[] {
+    const parts: LyricTextPart[] = [];
+    const quotedText = /“([^”]+)”/g;
+    let cursor = 0;
+    let match: RegExpExecArray | null;
+
+    while ((match = quotedText.exec(text)) !== null) {
+      const quotedContent = match[1];
+      const quoteEnd = match.index + match[0].length;
+      const isLyricQuote = !text.slice(quoteEnd).startsWith('这首歌');
+
+      if (match.index > cursor) {
+        parts.push({ text: text.slice(cursor, match.index), isSeparator: false });
+      }
+
+      parts.push({ text: '“', isSeparator: false });
+      parts.push(...lyricTextParts(quotedContent, isLyricQuote));
+      parts.push({ text: '”', isSeparator: false });
+      cursor = quoteEnd;
+    }
+
+    if (cursor < text.length) {
+      parts.push({ text: text.slice(cursor), isSeparator: false });
+    }
+
+    return parts.length > 0 ? parts : lyricTextParts(text);
   }
 
   function startQuiz() {
@@ -196,9 +226,11 @@
       </div>
 
       <h1 class="question-prompt">
-        {#each lyricTextParts(currentQuestion.prompt) as part}
+        {#each promptTextParts(currentQuestion.prompt) as part}
           {#if part.isSeparator}
             <span class="lyric-separator">{part.text}</span>
+          {:else if part.isPromptLyric}
+            <span class="prompt-lyric-text">{part.text}</span>
           {:else}
             {part.text}
           {/if}
@@ -438,6 +470,10 @@
     opacity: 0.42;
     text-shadow: none;
     transform: translateY(-0.04em);
+  }
+
+  .prompt-lyric-text {
+    font-size: 1.15em;
   }
 
   .result-panel {
