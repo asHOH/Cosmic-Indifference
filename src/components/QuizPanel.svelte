@@ -18,6 +18,10 @@
     size: number;
     glyph: string;
   };
+  type LyricTextPart = {
+    text: string;
+    isSeparator: boolean;
+  };
 
   const HOLD_CONFIRM_MS = 500;
   const RESULT_ADVANCE_DELAY_MS = 1500;
@@ -49,6 +53,16 @@
   $: resultBadge = badgeForScore(score);
 
   const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+  function lyricTextParts(text: string): LyricTextPart[] {
+    return text
+      .split(/(\/)/)
+      .filter(Boolean)
+      .map((part) => ({
+        text: part,
+        isSeparator: part === '/',
+      }));
+  }
 
   function startQuiz() {
     questions = createQuiz();
@@ -181,7 +195,15 @@
         <span>{score}</span>
       </div>
 
-      <h1 class="question-prompt">{currentQuestion.prompt}</h1>
+      <h1 class="question-prompt">
+        {#each lyricTextParts(currentQuestion.prompt) as part}
+          {#if part.isSeparator}
+            <span class="lyric-separator">{part.text}</span>
+          {:else}
+            {part.text}
+          {/if}
+        {/each}
+      </h1>
 
       <div class="answer-grid">
         {#each currentOptions as option, index (option.id)}
@@ -200,7 +222,15 @@
           >
             <span class="answer-fill"></span>
             <span class="answer-letter">{String.fromCharCode(65 + index)}</span>
-            <span class="answer-text">{option.text}</span>
+            <span class="answer-text">
+              {#each lyricTextParts(option.text) as part}
+                {#if part.isSeparator}
+                  <span class="lyric-separator">{part.text}</span>
+                {:else}
+                  {part.text}
+                {/if}
+              {/each}
+            </span>
           </button>
         {/each}
       </div>
@@ -399,6 +429,15 @@
     font-weight: 500;
     line-height: 1.38;
     overflow-wrap: anywhere;
+  }
+
+  .lyric-separator {
+    display: inline-block;
+    font-size: 0.72em;
+    font-weight: 400;
+    opacity: 0.42;
+    text-shadow: none;
+    transform: translateY(-0.04em);
   }
 
   .result-panel {
