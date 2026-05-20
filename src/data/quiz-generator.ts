@@ -182,7 +182,7 @@ function randomLyricOptions(
 ) {
   const excluded = new Set(excludedTexts);
   return sampleUnique(
-    parsed.lyrics.filter((lyric) => !excluded.has(lyric.text)),
+    parsed.lyrics.filter((lyric) => !lyric.background && !excluded.has(lyric.text)),
     count,
     random,
     (lyric) => lyric.text
@@ -230,22 +230,37 @@ function isUniqueText(lyrics: QuizLyric[], lyric: QuizLyric) {
   return (textCounts(lyrics).get(lyric.text) ?? 0) === 1;
 }
 
+function officialLyrics(lyrics: QuizLyric[]) {
+  return lyrics.filter((lyric) => !lyric.background);
+}
+
+function officialNeighbor(lyrics: QuizLyric[], startIndex: number, step: -1 | 1) {
+  for (let index = startIndex + step; index >= 0 && index < lyrics.length; index += step) {
+    const lyric = lyrics[index];
+    if (!lyric.background) return lyric;
+  }
+
+  return undefined;
+}
+
 function contextPrompt(
   lyrics: QuizLyric[],
-  promptIndex: number,
+  promptLyric: QuizLyric,
   direction: NeighborDirection
 ): string | null {
-  const promptLyric = lyrics[promptIndex];
-  if (isUniqueText(lyrics, promptLyric)) {
+  const official = officialLyrics(lyrics);
+  if (isUniqueText(official, promptLyric)) {
     return `“${promptLyric.text}”`;
   }
 
-  if (direction === 'next' && promptIndex > 0) {
-    return `“${lyrics[promptIndex - 1].text} / ${promptLyric.text}”`;
+  if (direction === 'next') {
+    const previous = officialNeighbor(lyrics, promptLyric.index, -1);
+    if (previous) return `“${previous.text} / ${promptLyric.text}”`;
   }
 
-  if (direction === 'previous' && promptIndex < lyrics.length - 1) {
-    return `“${promptLyric.text} / ${lyrics[promptIndex + 1].text}”`;
+  if (direction === 'previous') {
+    const next = officialNeighbor(lyrics, promptLyric.index, 1);
+    if (next) return `“${promptLyric.text} / ${next.text}”`;
   }
 
   return null;
@@ -254,24 +269,29 @@ function contextPrompt(
 function lyricQuestionCandidates(parsed: ParsedQuizSources, target: QuizLyric) {
   const candidates: { prompt: string; target: QuizLyric }[] = [];
   const { lyrics } = parsed;
-  const lastIndex = lyrics.length - 1;
+  const official = officialLyrics(lyrics);
+  const firstLine = official[0];
+  const lastLine = official[official.length - 1];
 
-  if (target.index === 0) {
+  if (target.background) return candidates;
+
+  if (target.index === firstLine?.index) {
     candidates.push({
       prompt: '“宇宙冷漠”这首歌的第一句歌词是什么？',
       target,
     });
   }
 
-  if (target.index === lastIndex) {
+  if (target.index === lastLine?.index) {
     candidates.push({
       prompt: '“宇宙冷漠”这首歌的最后一句歌词是什么？',
       target,
     });
   }
 
-  if (target.index > 0 && !lyrics[target.index - 1].background) {
-    const prompt = contextPrompt(lyrics, target.index - 1, 'next');
+  const previousPrompt = officialNeighbor(lyrics, target.index, -1);
+  if (previousPrompt) {
+    const prompt = contextPrompt(lyrics, previousPrompt, 'next');
     if (prompt) {
       candidates.push({
         prompt: `${prompt}的下一句歌词是什么？`,
@@ -280,8 +300,9 @@ function lyricQuestionCandidates(parsed: ParsedQuizSources, target: QuizLyric) {
     }
   }
 
-  if (target.index < lastIndex && !lyrics[target.index + 1].background) {
-    const prompt = contextPrompt(lyrics, target.index + 1, 'previous');
+  const nextPrompt = officialNeighbor(lyrics, target.index, 1);
+  if (nextPrompt) {
+    const prompt = contextPrompt(lyrics, nextPrompt, 'previous');
     if (prompt) {
       candidates.push({
         prompt: `${prompt}的上一句歌词是什么？`,
@@ -294,10 +315,13 @@ function lyricQuestionCandidates(parsed: ParsedQuizSources, target: QuizLyric) {
 }
 
 function makeLyricQuestion(parsed: ParsedQuizSources, random: Random): QuizQuestion {
-  const firstLine = parsed.lyrics[0];
-  const lastLine = parsed.lyrics[parsed.lyrics.length - 1];
-  const targets = uniqueByText([...parsed.targets, firstLine, lastLine], (lyric) =>
-    String(lyric.index)
+  const official = officialLyrics(parsed.lyrics);
+  const firstLine = official[0];
+  const lastLine = official[official.length - 1];
+  const edgeTargets = [firstLine, lastLine].filter((lyric): lyric is QuizLyric => Boolean(lyric));
+  const targets = uniqueByText(
+    [...parsed.targets.filter((lyric) => !lyric.background), ...edgeTargets],
+    (lyric) => String(lyric.index)
   );
   let target = pick(targets, random);
   let candidates = lyricQuestionCandidates(parsed, target);
