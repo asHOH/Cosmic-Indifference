@@ -143,13 +143,18 @@ test('perfect cup burst is delegated to canvas confetti', () => {
   );
   assert.match(
     particleBurstSource,
-    /function launchPerfectConfetti\(\)[\s\S]*fireCupConfetti\(\{[\s\S]*particleCount:\s*120,[\s\S]*spread:\s*92,[\s\S]*startVelocity:\s*76,[\s\S]*gravity:\s*1\.12,[\s\S]*origin:\s*{ x: 0\.5, y: 0\.48 }/,
-    'perfect cup burst should use high-velocity gravity-aware canvas confetti'
+    /function launchPerfectConfetti\(\)[\s\S]*fireCupConfetti\(\{[\s\S]*particleCount:\s*220,[\s\S]*spread:\s*120,[\s\S]*startVelocity:\s*98,[\s\S]*gravity:\s*1\.34,[\s\S]*origin:\s*{ x: 0\.5, y: 0\.48 }/,
+    'perfect cup burst should use extreme high-velocity gravity-aware canvas confetti'
   );
   assert.match(
     particleBurstSource,
     /setTimeout\(\(\) =>[\s\S]*fireCupConfetti\(\{[\s\S]*origin:\s*{ x: 0\.46, y: 0\.48 }[\s\S]*\}\);[\s\S]*},\s*180\)/,
     'perfect cup burst should include a delayed second burst'
+  );
+  assert.match(
+    particleBurstSource,
+    /setTimeout\(\(\) =>[\s\S]*particleCount:\s*190,[\s\S]*spread:\s*150,[\s\S]*origin:\s*{ x: 0\.5, y: 0\.5 }[\s\S]*},\s*430\)/,
+    'perfect cup burst should include a wide follow-up blast'
   );
   assert.match(
     particleBurstSource,
@@ -160,6 +165,62 @@ test('perfect cup burst is delegated to canvas confetti', () => {
     particleBurstSource,
     /@keyframes perfect-particle-burst/,
     'old segmented perfect keyframes should be removed'
+  );
+});
+
+test('perfect cup burst adds screen-bouncing physics particles', () => {
+  assert.match(
+    particleBurstSource,
+    /bind:this=\{physicsCanvas\}/,
+    'perfect score should render a canvas for physics-driven cup particles'
+  );
+  assert.match(
+    particleBurstSource,
+    /const PERFECT_PHYSICS_PARTICLE_COUNT = 260;/,
+    'perfect score should launch a much denser physics particle burst'
+  );
+  assert.match(
+    particleBurstSource,
+    /radius:\s*5 \+ Math\.random\(\) \* 11,/,
+    'perfect score particles should be visibly larger'
+  );
+  assert.match(
+    particleBurstSource,
+    /speed:\s*22 \+ Math\.random\(\) \* 24,/,
+    'perfect score particles should travel much faster and farther'
+  );
+  assert.match(
+    particleBurstSource,
+    /particle\.vy \+= PERFECT_PHYSICS_GRAVITY;/,
+    'perfect score particles should accelerate downward with gravity'
+  );
+  assert.match(
+    particleBurstSource,
+    /particle\.vx \*= -particle\.bounce;/,
+    'perfect score particles should bounce off vertical screen edges'
+  );
+  assert.match(
+    particleBurstSource,
+    /particle\.vy \*= -particle\.bounce;/,
+    'perfect score particles should bounce off horizontal screen edges'
+  );
+});
+
+test('perfect physics canvas is mounted outside transformed result panel', () => {
+  assert.match(
+    particleBurstSource,
+    /function mountInDocument\(node: HTMLCanvasElement\)/,
+    'perfect physics canvas should have an action that can move it out of the result panel'
+  );
+  assert.match(
+    particleBurstSource,
+    /document\.body\.appendChild\(node\);/,
+    'perfect physics canvas should be mounted under document.body for viewport positioning'
+  );
+  assert.match(
+    particleBurstSource,
+    /<canvas\s+use:mountInDocument\s+bind:this=\{physicsCanvas\}/,
+    'perfect physics canvas should use the body-mount action before binding'
   );
 });
 
