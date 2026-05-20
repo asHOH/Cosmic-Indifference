@@ -56,6 +56,29 @@ test('prompt separators outside quoted lyrics use the subdued slash style', () =
   );
 });
 
+test('question layout reserves fixed prompt and answer rows across questions', () => {
+  assert.match(
+    source,
+    /\.question-panel\s*{[\s\S]*grid-template-rows:\s*var\(--quiz-meta-height\)\s+var\(--question-prompt-height\)\s+calc\(/,
+    'question panel should use fixed rows so centering does not shift between question heights'
+  );
+  assert.match(
+    source,
+    /\.question-prompt\s*{[\s\S]*height:\s*var\(--question-prompt-height\);/,
+    'prompt should reserve a fixed two-line slot'
+  );
+  assert.match(
+    source,
+    /\.answer-grid\s*{[\s\S]*grid-template-rows:\s*repeat\(4,\s*var\(--answer-option-height\)\);/,
+    'answer grid should reserve fixed rows for all four options'
+  );
+  assert.match(
+    source,
+    /\.answer-option\s*{[\s\S]*height:\s*var\(--answer-option-height\);/,
+    'answer buttons should use the fixed row height instead of growing the panel'
+  );
+});
+
 test('question progress emphasizes only the current question index', () => {
   assert.match(
     source,

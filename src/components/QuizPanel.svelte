@@ -336,6 +336,11 @@
     --quiz-accent: #ffd166;
     --quiz-accent-rgb: 255 209 102;
     --quiz-accent-bright: #ffe8a3;
+    --quiz-meta-height: 2.6rem;
+    --question-prompt-height: 6.7rem;
+    --answer-option-height: 4.9rem;
+    --answer-row-gap: 0.64rem;
+    --question-row-gap: 1.2rem;
 
     width: min(92vw, 760px);
     gap: 2rem;
@@ -357,11 +362,20 @@
     width: 100%;
   }
 
+  .question-panel {
+    display: grid;
+    grid-template-rows:
+      var(--quiz-meta-height) var(--question-prompt-height)
+      calc(var(--answer-option-height) * 4 + var(--answer-row-gap) * 3);
+    row-gap: var(--question-row-gap);
+  }
+
   .quiz-meta {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    margin-bottom: 1.2rem;
+    height: var(--quiz-meta-height);
+    margin-bottom: 0;
     color: rgb(255 255 255 / 0.58);
     font-size: clamp(0.88rem, 2.2vw, 1rem);
     font-weight: 500;
@@ -388,8 +402,12 @@
   }
 
   .question-prompt {
-    min-height: 4.8rem;
-    margin-bottom: 1.4rem;
+    display: flex;
+    height: var(--question-prompt-height);
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0;
+    overflow: hidden;
     color: #f8fbff;
     font-size: clamp(1.28rem, 4vw, 2.35rem);
     font-weight: 700;
@@ -403,13 +421,16 @@
   .answer-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 0.64rem;
+    grid-template-rows: repeat(4, var(--answer-option-height));
+    gap: var(--answer-row-gap);
   }
 
   .answer-option {
     position: relative;
-    display: block;
-    min-height: 3.75rem;
+    display: flex;
+    height: var(--answer-option-height);
+    min-height: 0;
+    align-items: center;
     overflow: hidden;
     border: 0;
     border-radius: 8px;
@@ -417,7 +438,7 @@
       linear-gradient(130deg, rgb(255 255 255 / 0.08), rgb(255 255 255 / 0.025)), rgb(3 9 18 / 0.62);
     color: white;
     cursor: pointer;
-    padding: 0.88rem 1.05rem;
+    padding: 0.72rem 1.05rem;
     text-align: left;
     touch-action: manipulation;
     transition:
@@ -571,9 +592,9 @@
 
   .answer-text {
     min-width: 0;
-    font-size: clamp(1rem, 2.7vw, 1.18rem);
+    font-size: clamp(0.96rem, 2.4vw, 1.06rem);
     font-weight: 500;
-    line-height: 1.38;
+    line-height: 1.3;
     overflow-wrap: anywhere;
   }
 
@@ -793,18 +814,18 @@
 
   @media (max-width: 640px) {
     .quiz-shell {
+      --quiz-meta-height: 2.3rem;
+      --question-prompt-height: 5.6rem;
+      --answer-option-height: 4.55rem;
+      --answer-row-gap: 0.56rem;
+      --question-row-gap: 0.9rem;
+
       width: min(92vw, 34rem);
       gap: 1.3rem;
     }
 
     .answer-option {
-      min-height: 3.85rem;
-      padding: 0.72rem 0.82rem;
-    }
-
-    .question-prompt {
-      min-height: 4.1rem;
-      margin-bottom: 1rem;
+      padding: 0.62rem 0.82rem;
     }
 
     .advance-button {
