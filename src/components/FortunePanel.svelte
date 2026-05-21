@@ -171,11 +171,11 @@
   .fortune-image-frame {
     display: grid;
     position: absolute;
-    bottom: calc(100% + clamp(1.25rem, 3svh, 2rem));
+    bottom: calc(100% + clamp(7.5rem, 18svh, 10rem));
     left: 50%;
     width: min(50vw, 15rem);
-    height: min(34svh, 15rem);
-    min-height: 7rem;
+    height: min(24svh, 11.5rem);
+    min-height: 6rem;
     place-items: end center;
     transform: translateX(-50%);
   }

@@ -51,9 +51,16 @@ test('fortune image reveal keeps the initial layout compact and separates image 
   assert.match(source, /\.fortune-stage\s*\{[^}]*min-height:\s*13rem;/s);
   assert.match(source, /\.stage-expanded\s*\{[^}]*min-height:\s*clamp\(/s);
   assert.match(source, /\.reveal-layout\s+\.fortune-title\s*\{[^}]*translateY\(clamp\(/s);
-  assert.match(source, /\.reveal-layout\s+\.fortune-reveal-stack\s*\{[^}]*translateY\(/s);
+  assert.match(source, /<div class="fortune-text-stack">/);
+  assert.match(source, /\.reveal-layout\s+\.fortune-text-stack\s*\{[^}]*translateY\(/s);
+  assert.doesNotMatch(source, /\.reveal-layout\s+\.fortune-reveal-stack\s*\{[^}]*translateY\(/s);
   assert.doesNotMatch(source, /fortuneLifted|fortune-lifted/);
   assert.match(source, /\.fortune-image-frame\s*\{[^}]*position:\s*absolute;/s);
+  assert.match(
+    source,
+    /\.fortune-image-frame\s*\{[^}]*bottom:\s*calc\(100% \+ clamp\(3rem,\s*6svh,\s*4\.25rem\)\);/s
+  );
+  assert.match(source, /\.fortune-image-frame\s*\{[^}]*height:\s*min\(24svh,\s*11\.5rem\);/s);
   assert.match(source, /\.fortune-image\s*\{[^}]*transition-delay:\s*180ms;/s);
   assert.match(source, /\.image-loaded\s*\{[^}]*transition-delay:\s*180ms;/s);
 });
