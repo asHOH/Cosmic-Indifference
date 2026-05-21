@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
   import { cubicOut } from 'svelte/easing';
   import { fade, fly } from 'svelte/transition';
   import FortunePanel from './FortunePanel.svelte';
@@ -24,6 +25,10 @@
   const fadeTransition = fade;
   const flyTransition = fly;
   const modeEasing = cubicOut;
+  const videoSources = [
+    { src: '/yuzhoulengmo_360p.webm', type: 'video/webm' },
+    { src: '/yuzhoulengmo_360p.mp4', type: 'video/mp4' },
+  ];
 
   type AppMode = 'fortune' | 'quiz';
   type PlaybackState = 'Interactive' | 'VideoPlaying';
@@ -33,6 +38,7 @@
   let showModeToggle = true;
   let videoEl: HTMLVideoElement;
   let videoVisible = false;
+  let videoArmed = false;
   let modeTransitionDirection = 1;
   let fadeOutTimer: ReturnType<typeof setTimeout>;
 
@@ -45,7 +51,29 @@
 
   function handleFeatureStart() {
     showModeToggle = false;
+    armVideoPreload();
     safePlay(true);
+  }
+
+  function armVideoPreload(event?: Event) {
+    if (videoArmed || !videoEl || (event && !event.isTrusted)) return;
+
+    videoArmed = true;
+    videoEl.preload = 'auto';
+
+    const track = videoEl.querySelector('track');
+    for (const { src, type } of videoSources) {
+      const source = document.createElement('source');
+      source.src = src;
+      source.type = type;
+      videoEl.insertBefore(source, track);
+    }
+
+    videoEl.load();
+  }
+
+  function handleFirstInteraction(event: Event) {
+    armVideoPreload(event);
   }
 
   async function safePlay(isPrewarm = false) {
@@ -116,6 +144,18 @@
     await delay(TIMING.BLACK_DELAY_MS);
     videoVisible = true;
   }
+
+  onMount(() => {
+    const options = { capture: true, passive: true };
+
+    window.addEventListener('pointerdown', handleFirstInteraction, options);
+    window.addEventListener('keydown', handleFirstInteraction, options);
+
+    return () => {
+      window.removeEventListener('pointerdown', handleFirstInteraction, options);
+      window.removeEventListener('keydown', handleFirstInteraction, options);
+    };
+  });
 </script>
 
 <main
@@ -164,7 +204,7 @@
   <video
     bind:this={videoEl}
     id="fortune-video"
-    preload="auto"
+    preload="none"
     playsinline
     on:click={togglePlay}
     on:play={scheduleFadeOut}
@@ -177,8 +217,6 @@
       ? TIMING.VIDEO_FADE_IN_MS
       : TIMING.VIDEO_FADE_OUT_MS}ms"
   >
-    <source src="/yuzhoulengmo_360p.webm" type="video/webm" />
-    <source src="/yuzhoulengmo_360p.mp4" type="video/mp4" />
     <track kind="captions" />
   </video>
 </main>
