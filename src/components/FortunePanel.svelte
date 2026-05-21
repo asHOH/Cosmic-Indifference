@@ -1,5 +1,6 @@
 <script lang="ts">
   import RollButton from './RollButton.svelte';
+  import { fortuneImagePath } from '../data/fortune-images';
   import { fortunes, type Fortune } from '../data/fortunes';
 
   type FortuneState = 'Idle' | 'Rolling' | 'Revealed';
@@ -20,7 +21,8 @@
 
   let state: FortuneState = 'Idle';
   let currentFortune: Fortune | null = null;
-  let fortuneLifted = false;
+  let imageLoaded = false;
+  let imageErrored = false;
   let typedComment = '';
 
   const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -44,7 +46,8 @@
 
   async function rollFortune() {
     state = 'Rolling';
-    fortuneLifted = false;
+    imageLoaded = false;
+    imageErrored = false;
     typedComment = '';
     onStart();
 
@@ -58,7 +61,6 @@
     state = 'Revealed';
     await delay(timing.FINAL_FORTUNE_ANIMATION_MS);
 
-    fortuneLifted = true;
     await delay(timing.FORTUNE_LIFT_MS);
 
     if (currentFortune?.comment) {
@@ -71,29 +73,49 @@
 </script>
 
 <div
-  class="relative z-20 flex flex-col items-center justify-center space-y-8"
+  class="fortune-shell relative z-20 flex flex-col items-center justify-center space-y-8"
+  class:reveal-layout={state === 'Revealed'}
   style="--final-fortune-animation-ms: {timing.FINAL_FORTUNE_ANIMATION_MS}ms; --fortune-lift-ms: {timing.FORTUNE_LIFT_MS}ms"
 >
-  <h1 class="text-5xl font-bold tracking-widest text-[#95cdfe]">今日运势</h1>
+  <h1 class="fortune-title text-5xl font-bold tracking-widest text-[#95cdfe]">今日运势</h1>
 
-  <div class="fortune-stage flex min-h-52 flex-col items-center justify-center text-center">
+  <div
+    class="fortune-stage flex flex-col items-center justify-center text-center"
+    class:stage-expanded={state === 'Revealed'}
+  >
     {#if (state === 'Rolling' || state === 'Revealed') && currentFortune}
-      <div class="fortune-name-wrap" class:fortune-lifted={fortuneLifted}>
-        <span
-          class="fortune-name tracking-widest"
-          class:final-fortune={state === 'Revealed'}
-          style="color: {currentFortune.color}"
-          >{currentFortune.name}
-        </span>
-      </div>
+      <div class="fortune-reveal-stack">
+        {#if state === 'Revealed' && !imageErrored}
+          <div class="fortune-image-frame" aria-hidden="true">
+            <img
+              class="fortune-image"
+              class:image-loaded={imageLoaded}
+              src={fortuneImagePath(currentFortune.name)}
+              alt=""
+              decoding="async"
+              on:load={() => (imageLoaded = true)}
+              on:error={() => (imageErrored = true)}
+            />
+          </div>
+        {/if}
 
-      {#if state === 'Revealed'}
-        <p class="fortune-comment" aria-live="polite">
-          {#each Array.from(typedComment) as character, index (index)}
-            <span class="type-character">{character}</span>
-          {/each}
-        </p>
-      {/if}
+        <div class="fortune-name-wrap">
+          <span
+            class="fortune-name tracking-widest"
+            class:final-fortune={state === 'Revealed'}
+            style="color: {currentFortune.color}"
+            >{currentFortune.name}
+          </span>
+        </div>
+
+        {#if state === 'Revealed'}
+          <p class="fortune-comment" aria-live="polite">
+            {#each Array.from(typedComment) as character, index (index)}
+              <span class="type-character">{character}</span>
+            {/each}
+          </p>
+        {/if}
+      </div>
     {/if}
   </div>
 
@@ -107,19 +129,77 @@
 </div>
 
 <style>
-  .fortune-stage {
-    position: relative;
-    width: min(88vw, 720px);
-  }
-
-  .fortune-name-wrap {
+  .fortune-title {
     transform: translateY(0);
     transition: transform var(--fortune-lift-ms) cubic-bezier(0.22, 1, 0.36, 1);
     will-change: transform;
   }
 
-  .fortune-lifted {
-    transform: translateY(-1.35rem);
+  .reveal-layout .fortune-title {
+    transform: translateY(clamp(-6rem, -10svh, -4rem));
+  }
+
+  .fortune-stage {
+    position: relative;
+    width: min(88vw, 720px);
+    min-height: 13rem;
+    transition: min-height var(--fortune-lift-ms) cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .stage-expanded {
+    min-height: clamp(18rem, 58svh, 30rem);
+  }
+
+  .fortune-reveal-stack {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    align-items: center;
+    transform: translateY(0);
+    transition: transform var(--fortune-lift-ms) cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: transform;
+  }
+
+  .fortune-name-wrap {
+    min-height: 3.75rem;
+  }
+
+  .reveal-layout .fortune-reveal-stack {
+    transform: translateY(clamp(1.25rem, 3svh, 2rem));
+  }
+
+  .fortune-image-frame {
+    display: grid;
+    position: absolute;
+    bottom: calc(100% + clamp(1.25rem, 3svh, 2rem));
+    left: 50%;
+    width: min(50vw, 15rem);
+    height: min(34svh, 15rem);
+    min-height: 7rem;
+    place-items: end center;
+    transform: translateX(-50%);
+  }
+
+  .fortune-image {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    opacity: 0;
+    filter: drop-shadow(0 0 1.25rem rgb(149 205 254 / 0.28));
+    transform: translateY(0.9rem) scale(0.96);
+    transition:
+      opacity 520ms ease,
+      transform 680ms cubic-bezier(0.16, 1, 0.3, 1),
+      filter 680ms ease;
+    transition-delay: 180ms;
+  }
+
+  .image-loaded {
+    opacity: 1;
+    filter: drop-shadow(0 0 1.6rem rgb(149 205 254 / 0.36));
+    transform: translateY(0) scale(1);
+    transition-delay: 180ms;
   }
 
   .fortune-name {
@@ -129,18 +209,18 @@
   }
 
   .final-fortune {
-    animation: final-fortune var(--final-fortune-animation-ms) ease-out both;
+    animation: final-fortune var(--fortune-lift-ms) ease-out both;
     text-shadow: 0 0 18px currentColor;
   }
 
   .fortune-comment {
     white-space: pre-wrap;
     position: absolute;
-    top: calc(50% + 1.8rem);
+    top: calc(100% + clamp(0.7rem, 2svh, 1.1rem));
     left: 50%;
     width: min(78vw, 36rem);
     min-height: 2.25rem;
-    margin-top: 0.75rem;
+    margin: 0;
     color: rgb(255 255 255 / 0.6);
     font-size: clamp(1.125rem, 3.2vw, 1.5rem);
     font-weight: 300;
@@ -172,6 +252,18 @@
     to {
       opacity: 1;
       transform: translateY(0);
+    }
+  }
+
+  @media (max-height: 620px) {
+    .stage-expanded {
+      min-height: clamp(18rem, 64svh, 28rem);
+    }
+
+    .fortune-image-frame {
+      width: min(42vw, 11rem);
+      height: min(28svh, 11rem);
+      min-height: 5.75rem;
     }
   }
 </style>
