@@ -37,8 +37,8 @@
 - **Target Resolution:** The 3-minute video is compressed to 360p (WebM or MP4/H.264) using `ffmpeg` to ~8MB.
 
 ```bash
-    ffmpeg -y -i public/yuzhoulengmo.mp4 -vf scale=-2:360 -r 24 -c:v libvpx-vp9 -crf 32 -b:v 200k -row-mt 1 -c:a libopus -b:a 128k public/yuzhoulengmo_360p.webm
-    ffmpeg -y -i public/yuzhoulengmo.mp4 -vf scale=-2:360 -r 24 -c:v libx264 -preset veryslow -crf 26 -c:a aac -b:a 128k -movflags +faststart public/yuzhoulengmo_360p.mp4
+    ffmpeg -y -i assets/source/yuzhoulengmo.mp4 -vf scale=-2:360 -r 24 -c:v libvpx-vp9 -crf 32 -b:v 200k -row-mt 1 -c:a libopus -b:a 128k public/yuzhoulengmo_360p.webm
+    ffmpeg -y -i assets/source/yuzhoulengmo.mp4 -vf scale=-2:360 -r 24 -c:v libx264 -preset veryslow -crf 26 -c:a aac -b:a 128k -movflags +faststart public/yuzhoulengmo_360p.mp4
 ```
 
 ### Rejected Alternatives
