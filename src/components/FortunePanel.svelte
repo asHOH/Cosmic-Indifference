@@ -129,6 +129,15 @@
 </div>
 
 <style>
+  .fortune-shell {
+    --fortune-reveal-space: clamp(0.5rem, 1.2svh, 0.667rem);
+    --fortune-title-shift: calc(var(--fortune-reveal-space) * -9);
+    --fortune-text-shift: calc(var(--fortune-reveal-space) * 3);
+    --fortune-image-gap: calc(var(--fortune-reveal-space) * 15);
+    --fortune-image-height: calc(var(--fortune-reveal-space) * 17.25);
+    --fortune-comment-gap: calc(var(--fortune-reveal-space) * 1.6);
+  }
+
   .fortune-title {
     transform: translateY(0);
     transition: transform var(--fortune-lift-ms) cubic-bezier(0.22, 1, 0.36, 1);
@@ -136,7 +145,7 @@
   }
 
   .reveal-layout .fortune-title {
-    transform: translateY(clamp(-6rem, -10svh, -4rem));
+    transform: translateY(var(--fortune-title-shift));
   }
 
   .fortune-stage {
@@ -165,16 +174,16 @@
   }
 
   .reveal-layout .fortune-reveal-stack {
-    transform: translateY(clamp(1.25rem, 3svh, 2rem));
+    transform: translateY(var(--fortune-text-shift));
   }
 
   .fortune-image-frame {
     display: grid;
     position: absolute;
-    bottom: calc(100% + clamp(7.5rem, 18svh, 10rem));
+    bottom: calc(100% + var(--fortune-image-gap));
     left: 50%;
     width: min(50vw, 15rem);
-    height: min(24svh, 11.5rem);
+    height: var(--fortune-image-height);
     min-height: 6rem;
     place-items: end center;
     transform: translateX(-50%);
@@ -216,7 +225,7 @@
   .fortune-comment {
     white-space: pre-wrap;
     position: absolute;
-    top: calc(100% + clamp(0.7rem, 2svh, 1.1rem));
+    top: calc(100% + var(--fortune-comment-gap));
     left: 50%;
     width: min(78vw, 36rem);
     min-height: 2.25rem;
@@ -256,13 +265,16 @@
   }
 
   @media (max-height: 620px) {
+    .fortune-shell {
+      --fortune-reveal-space: clamp(0.42rem, 1svh, 0.6rem);
+    }
+
     .stage-expanded {
       min-height: clamp(18rem, 64svh, 28rem);
     }
 
     .fortune-image-frame {
       width: min(42vw, 11rem);
-      height: min(28svh, 11rem);
       min-height: 5.75rem;
     }
   }
