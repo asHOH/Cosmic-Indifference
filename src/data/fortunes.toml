@@ -58,7 +58,7 @@ comment = "晚点再来一签吧~"
 [[fortunes]]
 name = "黑暗之拥"
 color = "#5cdbd3"
-comment = "到底是谁在偷偷放宇宙冷漠给我听!?"
+comment = "到底谁在偷偷放宇宙冷漠给我听!?"
 
 [[fortunes]]
 name = "重振精神"
@@ -79,6 +79,11 @@ comment = "保持心态豁达"
 name = "计划妥当"
 color = "#5cdbd3"
 comment = "向猎宝学习!"
+
+[[fortunes]]
+name = "早有准备"
+color = "#5cdbd3"
+comment = "准备好一起唱宇宙冷漠了吗?"
 
 [[fortunes]]
 name = "下去!"
@@ -126,6 +131,26 @@ color = "#5cdbd3"
 comment = "要像小花一样开开心心呀!"
 
 [[fortunes]]
+name = "相信着你"
+color = "#5cdbd3"
+comment = "相信你今天一定万事顺遂!"
+
+[[fortunes]]
+name = "深谋远虑"
+color = "#5cdbd3"
+comment = "规划一下明天啥时候听宇宙冷漠吧~"
+
+[[fortunes]]
+name = "震荡波"
+color = "#5cdbd3"
+comment = "听宇宙冷漠听出虚弱易伤来了"
+
+[[fortunes]]
+name = "急躁"
+color = "#5cdbd3"
+comment = "怎么宇宙冷漠还没开始放?"
+
+[[fortunes]]
 name = "飞溅"
 color = "#5cdbd3"
 comment = "神挡杀神!"
@@ -155,16 +180,16 @@ weight = 0.25
 name = "凶"
 color = "#8c8c8c"
 comment = "也许可以考虑sl...?"
-weight = 0.125
+weight = 0.1
 
 [[fortunes]]
 name = "冈"
 color = "#8c8c8c"
 comment = "也许只是拿歪了90°...?"
-weight = 0.25
+weight = 0.1
 
 [[fortunes]]
 name = "区"
 color = "#576574"
 comment = "!?区区!? 我也要蠕动吗..."
-weight = 0.25
+weight = 0.1
