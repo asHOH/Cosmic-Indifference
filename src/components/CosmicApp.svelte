@@ -210,7 +210,7 @@
     on:play={scheduleFadeOut}
     on:pause={clearFadeOut}
     on:ended={handleVideoEnded}
-    class="absolute top-0 left-0 z-10 h-full w-full cursor-pointer object-cover transition-opacity ease-in"
+    class="fortune-video z-10 cursor-pointer transition-opacity ease-in"
     style:opacity={videoVisible ? '1' : '0'}
     style:pointer-events={videoVisible ? 'auto' : 'none'}
     style:transition-duration="{videoVisible
@@ -222,6 +222,18 @@
 </main>
 
 <style>
+  .fortune-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: min(120vw, 213.333333svh);
+    max-width: none;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: contain;
+    transform: translate(-50%, -50%);
+  }
+
   .mode-transition-stage {
     display: grid;
     width: 100%;
