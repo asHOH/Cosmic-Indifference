@@ -53,6 +53,8 @@ artist_link = "https://space.bilibili.com/6487305"
 name = "宇宙冷漠"
 color = "#5cdbd3"
 comment = "今天也是想听宇宙冷漠的一天呢~"
+artist = "池择雪"
+artist_link = "https://space.bilibili.com/179800906"
 
 [[fortunes]]
 name = "时候未到"
@@ -93,6 +95,7 @@ comment = "准备好一起唱宇宙冷漠了吗?"
 name = "下去!"
 color = "#5cdbd3"
 comment = "老大我听宇宙冷漠"
+artist = "欢迎认领"
 
 [[fortunes]]
 name = "恐惧"
