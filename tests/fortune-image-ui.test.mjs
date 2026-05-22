@@ -55,6 +55,23 @@ test('fortune panel renders linked artist credit beside the image', async () => 
   assert.match(source, /\.fortune-artist-credit\s*\{[^}]*left:\s*calc\(100% \+ 0\.5rem\);/s);
 });
 
+test('fortune debug trigger is development-only and previews the rare fortune', async () => {
+  const source = await readFile(
+    new URL('../src/components/FortunePanel.svelte', import.meta.url),
+    'utf8'
+  );
+
+  assert.match(source, /const showFortuneDebug = import\.meta\.env\.DEV;/);
+  assert.match(
+    source,
+    /function showRareFortuneDebug\(\)[\s\S]*fortune\.name === '超超超大吉'[\s\S]*state = 'Revealed';/
+  );
+  assert.match(
+    source,
+    /{#if showFortuneDebug}[\s\S]*class="fortune-debug-button"[\s\S]*on:click=\{showRareFortuneDebug\}/
+  );
+});
+
 test('fortune image reveal keeps the initial layout compact and separates image from text', async () => {
   const source = await readFile(
     new URL('../src/components/FortunePanel.svelte', import.meta.url),

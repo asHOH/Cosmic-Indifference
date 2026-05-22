@@ -26,6 +26,7 @@
   let typedComment = '';
 
   const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+  const showFortuneDebug = import.meta.env.DEV;
   const totalWeight = fortunes.reduce((sum, fortune) => sum + (fortune.weight ?? 1), 0);
 
   function randomFortune() {
@@ -69,6 +70,21 @@
 
     await delay(timing.REVEAL_DURATION_MS);
     await onComplete();
+  }
+
+  async function showRareFortuneDebug() {
+    const rareFortune = fortunes.find((fortune) => fortune.name === '超超超大吉');
+    if (!rareFortune) return;
+
+    currentFortune = rareFortune;
+    state = 'Revealed';
+    imageLoaded = false;
+    imageErrored = false;
+    typedComment = '';
+
+    if (rareFortune.comment) {
+      await typeComment(rareFortune.comment);
+    }
   }
 </script>
 
@@ -136,6 +152,17 @@
   >
     占卜
   </RollButton>
+
+  {#if showFortuneDebug}
+    <button
+      type="button"
+      class="fortune-debug-button"
+      aria-label="Debug rare fortune preview"
+      on:click={showRareFortuneDebug}
+    >
+      Debug Rare
+    </button>
+  {/if}
 </div>
 
 <style>
@@ -151,6 +178,26 @@
     transform: translateY(0);
     transition: transform var(--fortune-lift-ms) cubic-bezier(0.22, 1, 0.36, 1);
     will-change: transform;
+  }
+
+  .fortune-debug-button {
+    position: absolute;
+    right: 0;
+    bottom: -4.4rem;
+    border: 1px solid rgb(149 205 254 / 0.42);
+    border-radius: 999px;
+    background: rgb(0 0 0 / 0.36);
+    color: rgb(255 255 255 / 0.72);
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.45rem 0.7rem;
+    text-transform: uppercase;
+  }
+
+  .fortune-debug-button:hover {
+    border-color: rgb(149 205 254 / 0.78);
+    color: white;
   }
 
   .fortune-stage {
