@@ -131,21 +131,16 @@
 <style>
   .fortune-shell {
     --fortune-reveal-space: clamp(0.5rem, 1.2svh, 0.667rem);
-    --fortune-title-shift: calc(var(--fortune-reveal-space) * -9);
-    --fortune-text-shift: calc(var(--fortune-reveal-space) * 3);
+    --fortune-text-shift: calc(var(--fortune-reveal-space) * 15);
     --fortune-image-gap: calc(var(--fortune-reveal-space) * 15);
-    --fortune-image-height: calc(var(--fortune-reveal-space) * 17.25);
-    --fortune-comment-gap: calc(var(--fortune-reveal-space) * 1.6);
+    --fortune-image-height: calc(var(--fortune-reveal-space) * 18);
+    --fortune-comment-gap: calc(var(--fortune-reveal-space) * 1.8);
   }
 
   .fortune-title {
     transform: translateY(0);
     transition: transform var(--fortune-lift-ms) cubic-bezier(0.22, 1, 0.36, 1);
     will-change: transform;
-  }
-
-  .reveal-layout .fortune-title {
-    transform: translateY(var(--fortune-title-shift));
   }
 
   .fortune-stage {
