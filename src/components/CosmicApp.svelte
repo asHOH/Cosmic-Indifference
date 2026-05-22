@@ -226,12 +226,24 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    width: min(120vw, 213.333333svh);
+    width: min(100vw, 177.777778svh);
     max-width: none;
     height: auto;
     aspect-ratio: 16 / 9;
     object-fit: contain;
     transform: translate(-50%, -50%);
+  }
+
+  @media (max-aspect-ratio: 40 / 27) {
+    .fortune-video {
+      width: 120vw;
+    }
+  }
+
+  @media (min-aspect-ratio: 32 / 15) {
+    .fortune-video {
+      width: 213.333333svh;
+    }
   }
 
   .mode-transition-stage {

@@ -35,11 +35,11 @@ test('video source is armed only after a first user interaction', () => {
   );
 });
 
-test('video fit is capped to 10 percent overflow on each viewport edge', () => {
+test('video fit avoids two-axis overflow near the source aspect ratio', () => {
   assert.match(
     source,
-    /width:\s*min\(120vw,\s*213\.333333svh\);/,
-    'video overflow cap should allow at most 10 percent past each edge'
+    /width:\s*min\(100vw,\s*177\.777778svh\);/,
+    'near-16:9 viewports should contain the video instead of overflowing both axes'
   );
   assert.match(
     source,
@@ -50,6 +50,16 @@ test('video fit is capped to 10 percent overflow on each viewport edge', () => {
     source,
     /max-width:\s*none;/,
     'video should override Tailwind Preflight max-width so horizontal overflow can render'
+  );
+  assert.match(
+    source,
+    /@media \(max-aspect-ratio:\s*40 \/ 27\)\s*\{[\s\S]*\.fortune-video\s*\{[\s\S]*width:\s*120vw;/s,
+    'narrow viewports should allow horizontal-only overflow'
+  );
+  assert.match(
+    source,
+    /@media \(min-aspect-ratio:\s*32 \/ 15\)\s*\{[\s\S]*\.fortune-video\s*\{[\s\S]*width:\s*213\.333333svh;/s,
+    'wide viewports should allow vertical-only overflow'
   );
   assert.match(
     source,
