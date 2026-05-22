@@ -83,14 +83,11 @@ test('fortune image reveal keeps the initial layout compact and separates image 
   assert.match(source, /\.fortune-stage\s*\{[^}]*min-height:\s*13rem;/s);
   assert.match(source, /\.stage-expanded\s*\{[^}]*min-height:\s*clamp\(/s);
   assert.match(source, /--fortune-reveal-space:\s*clamp\(/);
-  assert.match(source, /--fortune-title-shift:\s*calc\(var\(--fortune-reveal-space\) \* -9\);/);
-  assert.match(source, /--fortune-text-shift:\s*calc\(var\(--fortune-reveal-space\) \* 3\);/);
+  assert.doesNotMatch(source, /--fortune-title-shift/);
+  assert.match(source, /--fortune-text-shift:\s*calc\(var\(--fortune-reveal-space\) \* 15\);/);
   assert.match(source, /--fortune-image-gap:\s*calc\(var\(--fortune-reveal-space\) \* 15\);/);
-  assert.match(
-    source,
-    /--fortune-image-height:\s*calc\(var\(--fortune-reveal-space\) \* 17\.25\);/
-  );
-  assert.match(source, /\.reveal-layout\s+\.fortune-title\s*\{[^}]*var\(--fortune-title-shift\)/s);
+  assert.match(source, /--fortune-image-height:\s*calc\(var\(--fortune-reveal-space\) \* 18\);/);
+  assert.doesNotMatch(source, /\.reveal-layout\s+\.fortune-title/);
   assert.match(
     source,
     /\.reveal-layout\s+\.fortune-reveal-stack\s*\{[^}]*var\(--fortune-text-shift\)/s
@@ -103,5 +100,5 @@ test('fortune image reveal keeps the initial layout compact and separates image 
   );
   assert.match(source, /\.fortune-image-frame\s*\{[^}]*height:\s*var\(--fortune-image-height\);/s);
   assert.match(source, /\.fortune-image\s*\{[^}]*transition-delay:\s*180ms;/s);
-  assert.match(source, /\.image-loaded\s*\{[^}]*transition-delay:\s*180ms;/s);
+  assert.doesNotMatch(source, /\.image-loaded\s*\{[^}]*transition-delay:/s);
 });

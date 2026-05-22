@@ -174,12 +174,6 @@
     --fortune-comment-gap: calc(var(--fortune-reveal-space) * 1.8);
   }
 
-  .fortune-title {
-    transform: translateY(0);
-    transition: transform var(--fortune-lift-ms) cubic-bezier(0.22, 1, 0.36, 1);
-    will-change: transform;
-  }
-
   .fortune-debug-button {
     position: absolute;
     right: 0;
@@ -230,14 +224,12 @@
   }
 
   .fortune-image-frame {
-    display: grid;
     position: absolute;
     bottom: calc(100% + var(--fortune-image-gap));
     left: 50%;
     width: min(50vw, 15rem);
     height: var(--fortune-image-height);
     min-height: 6rem;
-    place-items: end center;
     transform: translateX(-50%);
   }
 
@@ -245,7 +237,6 @@
     display: block;
     max-width: 100%;
     max-height: 100%;
-    object-fit: contain;
     opacity: 0;
     filter: drop-shadow(0 0 1.25rem rgb(149 205 254 / 0.28));
     transform: translateY(0.9rem) scale(0.96);
@@ -285,7 +276,6 @@
     opacity: 1;
     filter: drop-shadow(0 0 1.6rem rgb(149 205 254 / 0.36));
     transform: translateY(0) scale(1);
-    transition-delay: 180ms;
   }
 
   .fortune-name {
