@@ -87,15 +87,25 @@
       <div class="fortune-reveal-stack">
         {#if state === 'Revealed' && !imageErrored}
           <div class="fortune-image-frame" aria-hidden="true">
-            <img
-              class="fortune-image"
-              class:image-loaded={imageLoaded}
-              src={fortuneImagePath(currentFortune.name)}
-              alt=""
-              decoding="async"
-              on:load={() => (imageLoaded = true)}
-              on:error={() => (imageErrored = true)}
-            />
+            <div class="fortune-image-content">
+              <img
+                class="fortune-image"
+                class:image-loaded={imageLoaded}
+                src={fortuneImagePath(currentFortune.name)}
+                alt=""
+                decoding="async"
+                on:load={() => (imageLoaded = true)}
+                on:error={() => (imageErrored = true)}
+              />
+              {#if currentFortune.artist && currentFortune.artist_link}
+                <a
+                  class="fortune-artist-credit"
+                  href={currentFortune.artist_link}
+                  target="_blank"
+                  rel="noreferrer">@{currentFortune.artist}</a
+                >
+              {/if}
+            </div>
           </div>
         {/if}
 
@@ -197,6 +207,31 @@
       transform 680ms cubic-bezier(0.16, 1, 0.3, 1),
       filter 680ms ease;
     transition-delay: 180ms;
+  }
+
+  .fortune-image-content {
+    display: grid;
+    position: relative;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    place-items: end center;
+  }
+
+  .fortune-artist-credit {
+    position: absolute;
+    bottom: 0;
+    left: calc(100% + 0.5rem);
+    color: rgb(255 255 255 / 0.52);
+    font-size: 0.75rem;
+    line-height: 1;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .fortune-artist-credit:hover {
+    color: rgb(255 255 255 / 0.78);
+    text-decoration: underline;
   }
 
   .image-loaded {

@@ -40,6 +40,21 @@ test('fortune panel renders the revealed image before the fortune name', async (
   assert.match(source, /on:error=\{\(\) => \(imageErrored = true\)\}/);
 });
 
+test('fortune panel renders linked artist credit beside the image', async () => {
+  const source = await readFile(
+    new URL('../src/components/FortunePanel.svelte', import.meta.url),
+    'utf8'
+  );
+
+  assert.match(source, /currentFortune\.artist/);
+  assert.match(source, /currentFortune\.artist_link/);
+  assert.match(source, /href=\{currentFortune\.artist_link\}/);
+  assert.match(source, />@\{currentFortune\.artist\}</);
+  assert.match(source, /\.fortune-artist-credit\s*\{[^}]*position:\s*absolute;/s);
+  assert.match(source, /\.fortune-artist-credit\s*\{[^}]*bottom:\s*0;/s);
+  assert.match(source, /\.fortune-artist-credit\s*\{[^}]*left:\s*calc\(100% \+ 0\.5rem\);/s);
+});
+
 test('fortune image reveal keeps the initial layout compact and separates image from text', async () => {
   const source = await readFile(
     new URL('../src/components/FortunePanel.svelte', import.meta.url),

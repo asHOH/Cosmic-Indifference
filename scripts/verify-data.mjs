@@ -28,6 +28,16 @@ function verifyFortunes() {
       assert.equal(typeof fortune.weight, 'number', `fortune ${index + 1} weight must be a number`);
       assert.ok(fortune.weight > 0, `fortune ${index + 1} weight must be positive`);
     }
+    if ('artist' in fortune) {
+      assert.equal(typeof fortune.artist, 'string', `fortune ${index + 1} artist must be a string`);
+    }
+    if ('artist_link' in fortune) {
+      assert.equal(
+        typeof fortune.artist_link,
+        'string',
+        `fortune ${index + 1} artist_link must be a string`
+      );
+    }
   }
 }
 

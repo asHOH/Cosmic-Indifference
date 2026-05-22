@@ -3,6 +3,8 @@ name = "超超超大吉"
 color = "#ff4d4f"
 comment = "这条运势出现的概率仅有1/1000000!"
 weight = 0.00002
+artist = "笨蛋芷荧"
+artist_link = "https://space.bilibili.com/1708779209"
 
 [[fortunes]]
 name = "大大吉"
@@ -44,6 +46,8 @@ comment = "🎵真空剑圣!🎵"
 name = "蛇咬"
 color = "#5cdbd3"
 comment = "啊♥呜♥~"
+artist = "蛞蝓仔仔"
+artist_link = "https://space.bilibili.com/6487305"
 
 [[fortunes]]
 name = "宇宙冷漠"

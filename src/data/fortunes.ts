@@ -6,6 +6,8 @@ export type Fortune = {
   color: string;
   weight?: number;
   comment?: string;
+  artist?: string;
+  artist_link?: string;
 };
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -29,6 +31,14 @@ function parseFortune(value: unknown, index: number): Fortune {
     throw new Error(`Fortune ${index + 1} comment must be a string`);
   }
 
+  if (value.artist !== undefined && typeof value.artist !== 'string') {
+    throw new Error(`Fortune ${index + 1} artist must be a string`);
+  }
+
+  if (value.artist_link !== undefined && typeof value.artist_link !== 'string') {
+    throw new Error(`Fortune ${index + 1} artist_link must be a string`);
+  }
+
   if (value.weight !== undefined) {
     if (typeof value.weight !== 'number' || value.weight <= 0) {
       throw new Error(`Fortune ${index + 1} weight must be a positive number`);
@@ -38,6 +48,8 @@ function parseFortune(value: unknown, index: number): Fortune {
       name: value.name,
       color: value.color,
       comment: value.comment,
+      artist: value.artist,
+      artist_link: value.artist_link,
       weight: value.weight,
     };
   }
@@ -46,6 +58,8 @@ function parseFortune(value: unknown, index: number): Fortune {
     name: value.name,
     color: value.color,
     comment: value.comment,
+    artist: value.artist,
+    artist_link: value.artist_link,
   };
 }
 
