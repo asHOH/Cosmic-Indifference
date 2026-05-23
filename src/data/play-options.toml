@@ -1,0 +1,24 @@
+[[options]]
+name = "战士"
+color = "#ff6b6b"
+comment = "今天适合正面开战。"
+
+[[options]]
+name = "猎人"
+color = "#5eead4"
+comment = "今天适合耐心瞄准。"
+
+[[options]]
+name = "储君"
+color = "#facc15"
+comment = "今天适合稳坐王座。"
+
+[[options]]
+name = "骨姐"
+color = "#d8b4fe"
+comment = "今天适合优雅收割。"
+
+[[options]]
+name = "机宝"
+color = "#93c5fd"
+comment = "今天适合启动机宝模式。"

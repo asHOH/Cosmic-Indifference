@@ -1,7 +1,7 @@
 <script lang="ts">
   import RollResultPanel from './RollResultPanel.svelte';
-  import { fortuneImagePath } from '../data/fortune-images';
-  import { fortunes } from '../data/fortunes';
+  import { playOptionImagePath } from '../data/play-option-images';
+  import { playOptions } from '../data/play-options';
 
   type FortuneTiming = {
     ROLL_INTERVAL_MS: number;
@@ -19,12 +19,10 @@
 </script>
 
 <RollResultPanel
-  title="今日运势"
-  entries={fortunes}
-  imagePath={fortuneImagePath}
-  accentColor="#95cdfe"
-  debugEntryName="超超超大吉"
-  debugLabel="Debug Rare"
+  title="今天玩什么"
+  entries={playOptions}
+  imagePath={playOptionImagePath}
+  accentColor="#5eead4"
   {timing}
   {onStart}
   {onComplete}

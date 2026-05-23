@@ -12,7 +12,7 @@ const DERIVED_FORTUNE_IMAGES = [
   {
     sourceName: '凶',
     targetName: '小凶',
-    transform: { type: 'scale', value: 0.4 },
+    transform: { type: 'scale', value: 0.35 },
   },
   {
     sourceName: '凶',

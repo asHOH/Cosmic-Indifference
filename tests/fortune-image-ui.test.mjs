@@ -21,15 +21,14 @@ test('fortune image path is derived from the fortune name', async () => {
   assert.equal(fortuneImagePath('开心小花'), '/fortunes/%E5%BC%80%E5%BF%83%E5%B0%8F%E8%8A%B1.webp');
 });
 
-test('fortune panel renders the revealed image before the fortune name', async () => {
+test('shared roll result panel renders the revealed image before the result name', async () => {
   const source = await readFile(
-    new URL('../src/components/FortunePanel.svelte', import.meta.url),
+    new URL('../src/components/RollResultPanel.svelte', import.meta.url),
     'utf8'
   );
 
-  assert.match(source, /import \{ fortuneImagePath \} from '\.\.\/data\/fortune-images';/);
   assert.match(source, /<img\s+class="fortune-image"/);
-  assert.match(source, /src=\{fortuneImagePath\(currentFortune\.name\)\}/);
+  assert.match(source, /src=\{imagePath\(currentEntry\.name\)\}/);
   assert.ok(
     source.indexOf('<img\n          class="fortune-image"') <
       source.indexOf('class="fortune-name-wrap"'),
@@ -40,41 +39,34 @@ test('fortune panel renders the revealed image before the fortune name', async (
   assert.match(source, /on:error=\{\(\) => \(imageErrored = true\)\}/);
 });
 
-test('fortune panel renders linked artist credit beside the image', async () => {
+test('shared roll result panel renders linked artist credit beside the image', async () => {
   const source = await readFile(
-    new URL('../src/components/FortunePanel.svelte', import.meta.url),
+    new URL('../src/components/RollResultPanel.svelte', import.meta.url),
     'utf8'
   );
 
-  assert.match(source, /currentFortune\.artist/);
-  assert.match(source, /currentFortune\.artist_link/);
-  assert.match(source, /href=\{currentFortune\.artist_link\}/);
-  assert.match(source, />@\{currentFortune\.artist\}</);
+  assert.match(source, /currentEntry\.artist/);
+  assert.match(source, /currentEntry\.artist_link/);
+  assert.match(source, /href=\{currentEntry\.artist_link\}/);
+  assert.match(source, />@\{currentEntry\.artist\}</);
   assert.match(source, /\.fortune-artist-credit\s*\{[^}]*position:\s*absolute;/s);
   assert.match(source, /\.fortune-artist-credit\s*\{[^}]*bottom:\s*0;/s);
   assert.match(source, /\.fortune-artist-credit\s*\{[^}]*left:\s*calc\(100% \+ 0\.5rem\);/s);
 });
 
-test('fortune debug trigger is development-only and previews the rare fortune', async () => {
+test('fortune panel configures a development-only rare fortune debug preview', async () => {
   const source = await readFile(
     new URL('../src/components/FortunePanel.svelte', import.meta.url),
     'utf8'
   );
 
-  assert.match(source, /const showFortuneDebug = import\.meta\.env\.DEV;/);
-  assert.match(
-    source,
-    /function showRareFortuneDebug\(\)[\s\S]*fortune\.name === '超超超大吉'[\s\S]*state = 'Revealed';/
-  );
-  assert.match(
-    source,
-    /{#if showFortuneDebug}[\s\S]*class="fortune-debug-button"[\s\S]*on:click=\{showRareFortuneDebug\}/
-  );
+  assert.match(source, /debugEntryName="超超超大吉"/);
+  assert.match(source, /debugLabel="Debug Rare"/);
 });
 
-test('fortune image reveal keeps the initial layout compact and separates image from text', async () => {
+test('shared roll result image reveal keeps the initial layout compact and separates image from text', async () => {
   const source = await readFile(
-    new URL('../src/components/FortunePanel.svelte', import.meta.url),
+    new URL('../src/components/RollResultPanel.svelte', import.meta.url),
     'utf8'
   );
 

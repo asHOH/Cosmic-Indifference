@@ -41,6 +41,28 @@ function verifyFortunes() {
   }
 }
 
+function verifyPlayOptions() {
+  const data = readToml('src/data/play-options.toml');
+  const expectedNames = ['战士', '猎人', '储君', '骨姐', '机宝'];
+
+  assert.ok(Array.isArray(data.options), 'play-options.toml must contain [[options]] entries');
+  assert.deepEqual(
+    data.options.map((option) => option.name),
+    expectedNames,
+    'play-options.toml should define the expected 今天玩什么 options'
+  );
+
+  for (const [index, option] of data.options.entries()) {
+    assert.equal(typeof option.name, 'string', `play option ${index + 1} needs a string name`);
+    assert.equal(typeof option.color, 'string', `play option ${index + 1} needs a string color`);
+    assert.equal(
+      typeof option.comment,
+      'string',
+      `play option ${index + 1} needs a string comment`
+    );
+  }
+}
+
 function verifyQuizResultComments() {
   const data = readToml('src/data/quiz-result-comments.toml');
 
@@ -129,5 +151,6 @@ async function verifyQuizGenerator() {
 }
 
 verifyFortunes();
+verifyPlayOptions();
 verifyQuizResultComments();
 await verifyQuizGenerator();

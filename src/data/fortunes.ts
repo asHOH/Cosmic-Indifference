@@ -1,14 +1,8 @@
 import { parse } from 'smol-toml';
 import fortunesSource from './fortunes.toml?raw';
+import type { RollResultEntry } from './roll-result-entry';
 
-export type Fortune = {
-  name: string;
-  color: string;
-  weight?: number;
-  comment?: string;
-  artist?: string;
-  artist_link?: string;
-};
+export type Fortune = RollResultEntry;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;

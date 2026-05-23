@@ -4,7 +4,9 @@
   import { fade, fly } from 'svelte/transition';
   import FortunePanel from './FortunePanel.svelte';
   import ModeToggle from './ModeToggle.svelte';
+  import PlayPanel from './PlayPanel.svelte';
   import QuizPanel from './QuizPanel.svelte';
+  import { nextAppMode, type AppMode } from '../data/app-modes';
 
   const TIMING = {
     ROLL_INTERVAL_MS: 35,
@@ -30,7 +32,6 @@
     { src: '/yuzhoulengmo_360p.mp4', type: 'video/mp4' },
   ];
 
-  type AppMode = 'fortune' | 'quiz';
   type PlaybackState = 'Interactive' | 'VideoPlaying';
 
   let appMode: AppMode = 'fortune';
@@ -45,8 +46,8 @@
   const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
   function toggleMode() {
-    modeTransitionDirection = appMode === 'fortune' ? 1 : -1;
-    appMode = appMode === 'fortune' ? 'quiz' : 'fortune';
+    modeTransitionDirection = 1;
+    appMode = nextAppMode(appMode);
   }
 
   function handleFeatureStart() {
@@ -184,6 +185,12 @@
           >
             {#if appMode === 'fortune'}
               <FortunePanel
+                timing={TIMING}
+                onStart={handleFeatureStart}
+                onComplete={playVideoAfterFeature}
+              />
+            {:else if appMode === 'play'}
+              <PlayPanel
                 timing={TIMING}
                 onStart={handleFeatureStart}
                 onComplete={playVideoAfterFeature}
