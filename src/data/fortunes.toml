@@ -14,7 +14,7 @@ weight = 0.125
 
 [[fortunes]]
 name = "大吉"
-color = "#ff6666"
+color = "#ff5555"
 comment = "中大奖了! (此处有一储君笑话)"
 
 [[fortunes]]
@@ -44,7 +44,7 @@ comment = "🎵真空剑圣!🎵"
 
 [[fortunes]]
 name = "蛇咬"
-color = "#00cc11"
+color = "#00dd11"
 comment = "啊♥呜♥~"
 artist = "蛞蝓仔仔"
 artist_link = "https://space.bilibili.com/6487305"
@@ -58,7 +58,7 @@ artist_link = "https://space.bilibili.com/179800906"
 
 [[fortunes]]
 name = "时候未到"
-color = "#ff6666"
+color = "#ff5555"
 comment = "晚点再来一签吧~"
 
 [[fortunes]]
@@ -78,17 +78,17 @@ comment = "攻防一体的艺术品!"
 
 [[fortunes]]
 name = "耸肩无视"
-color = "#ff6666"
+color = "#ff5555"
 comment = "保持心态豁达"
 
 [[fortunes]]
 name = "计划妥当"
-color = "#00cc11"
+color = "#00dd11"
 comment = "向猎宝学习!"
 
 [[fortunes]]
 name = "早有准备"
-color = "#00cc11"
+color = "#00dd11"
 comment = "准备好一起唱宇宙冷漠了吗?"
 
 [[fortunes]]
