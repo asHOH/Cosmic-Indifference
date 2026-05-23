@@ -261,11 +261,8 @@ async function preprocessNamedImages({
   return outputs;
 }
 
-export async function preprocessFortuneImages(options = {}) {
-  return preprocessNamedImages({
-    ...options,
-    derivedImages: options.derivedImages ?? DERIVED_FORTUNE_IMAGES,
-  });
+export async function preprocessImageFolder(options = {}) {
+  return preprocessNamedImages(options);
 }
 
 export async function preprocessConfiguredImageFolders({

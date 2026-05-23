@@ -8,10 +8,10 @@ import sharp from 'sharp';
 import {
   parseOptions,
   preprocessConfiguredImageFolders,
-  preprocessFortuneImages,
-} from '../scripts/preprocess-fortune-images.mjs';
+  preprocessImageFolder,
+} from '../scripts/preprocess-images.mjs';
 
-test('preprocesses transparent PNG fortune images to bounded lossy WebP files', async () => {
+test('preprocesses transparent PNG images to bounded lossy WebP files', async () => {
   const root = await mkdtemp(path.join(tmpdir(), 'fortune-images-'));
   const sourceDir = path.join(root, 'source');
   const outputDir = path.join(root, 'public');
@@ -31,7 +31,7 @@ test('preprocesses transparent PNG fortune images to bounded lossy WebP files', 
       .toFile(path.join(sourceDir, '开心小花.png'));
     await writeFile(path.join(sourceDir, 'ignore.txt'), 'not an image');
 
-    const outputs = await preprocessFortuneImages({
+    const outputs = await preprocessImageFolder({
       sourceDir,
       outputDir,
       maxDimension: 16,
@@ -84,7 +84,24 @@ test('generates derived fortune images from 凶 transforms', async () => {
       .png()
       .toFile(path.join(sourceDir, '凶.png'));
 
-    const outputs = await preprocessFortuneImages({
+    const outputs = await preprocessImageFolder({
+      derivedImages: [
+        {
+          sourceName: '凶',
+          targetName: '小凶',
+          transform: { type: 'scale', value: 0.35 },
+        },
+        {
+          sourceName: '凶',
+          targetName: '冈',
+          transform: { type: 'rotate', value: 180 },
+        },
+        {
+          sourceName: '凶',
+          targetName: '区',
+          transform: { type: 'rotate', value: 90 },
+        },
+      ],
       sourceDir,
       outputDir,
       maxDimension: 100,
