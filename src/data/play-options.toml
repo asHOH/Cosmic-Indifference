@@ -1,21 +1,21 @@
 [[options]]
 name = "战士"
 color = "#ff5555"
-comment = "今天适合正面开战。"
+comment = "猪血放干!"
 artist = "蛞蝓仔仔"
 artist_link = "https://space.bilibili.com/6487305"
 
 [[options]]
 name = "猎人"
 color = "#00dd11"
-comment = ".................."
+comment = "..................(尖啸)"
 artist = "蛞蝓仔仔"
 artist_link = "https://space.bilibili.com/6487305"
 
 [[options]]
 name = "储君"
 color = "#ff7711"
-comment = "我进塔！！！"
+comment = "我进塔!!!"
 artist = "不夜海没风"
 artist_link = "https://space.bilibili.com/194689445"
 
@@ -30,11 +30,13 @@ artist_link = "https://space.bilibili.com/506606345"
 name = "机宝"
 color = "#44bbff"
 comment = "在启动了 在启动"
+artist = "本无心吖"
+artist_link = "https://space.bilibili.com/342005427"
 
 [[options]]
 name = "储君的仆从"
 color = "#ff7711"
-comment = "我进塔！！！"
+comment = "殿下......其实是我把王国资产弄丢了"
 weight = 0.01
 artist = "不夜海没风"
 artist_link = "https://space.bilibili.com/194689445"

@@ -1,8 +1,8 @@
 [[fortunes]]
 name = "超超超大吉"
 color = "#ff4d4f"
-comment = "这条运势出现的概率仅有1/1000000!"
-weight = 0.00002
+comment = "这条运势出现的概率不到1/1000000!"
+weight = 0.00003
 artist = "笨蛋芷荧"
 artist_link = "https://space.bilibili.com/1708779209"
 
@@ -10,7 +10,7 @@ artist_link = "https://space.bilibili.com/1708779209"
 name = "大大吉"
 color = "#ff3333"
 comment = "比这些年大家的卡组还大!"
-weight = 0.125
+weight = 0.1
 
 [[fortunes]]
 name = "大吉"
@@ -52,7 +52,7 @@ artist_link = "https://space.bilibili.com/6487305"
 [[fortunes]]
 name = "宇宙冷漠"
 color = "#55dddd"
-comment = "今天也是想听宇宙冷漠的一天呢~"
+comment = "又是这里......好想离开......"
 artist = "池择雪"
 artist_link = "https://space.bilibili.com/179800906"
 
@@ -74,7 +74,7 @@ comment = "向战士哥学习!"
 [[fortunes]]
 name = "铁斩波"
 color = "#4499ff"
-comment = "攻防一体的艺术品!"
+comment = "攻防一体的艺术品! 尖塔底层逻辑!"
 
 [[fortunes]]
 name = "耸肩无视"
@@ -89,7 +89,7 @@ comment = "向猎宝学习!"
 [[fortunes]]
 name = "早有准备"
 color = "#00dd11"
-comment = "准备好一起唱宇宙冷漠了吗?"
+comment = "准备好一起唱了吗?"
 
 [[fortunes]]
 name = "下去!"
