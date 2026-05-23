@@ -17,13 +17,7 @@ function verifyFortunes() {
   for (const [index, fortune] of data.fortunes.entries()) {
     assert.equal(typeof fortune.name, 'string', `fortune ${index + 1} needs a string name`);
     assert.equal(typeof fortune.color, 'string', `fortune ${index + 1} needs a string color`);
-    if ('comment' in fortune) {
-      assert.equal(
-        typeof fortune.comment,
-        'string',
-        `fortune ${index + 1} comment must be a string`
-      );
-    }
+    assert.equal(typeof fortune.comment, 'string', `fortune ${index + 1} needs a string comment`);
     if ('weight' in fortune) {
       assert.equal(typeof fortune.weight, 'number', `fortune ${index + 1} weight must be a number`);
       assert.ok(fortune.weight > 0, `fortune ${index + 1} weight must be positive`);
@@ -43,14 +37,13 @@ function verifyFortunes() {
 
 function verifyPlayOptions() {
   const data = readToml('src/data/play-options.toml');
-  const expectedNames = ['战士', '猎人', '储君', '骨姐', '机宝'];
+  const requiredNames = ['战士', '猎人', '储君', '骨姐', '机宝'];
 
   assert.ok(Array.isArray(data.options), 'play-options.toml must contain [[options]] entries');
-  assert.deepEqual(
-    data.options.map((option) => option.name),
-    expectedNames,
-    'play-options.toml should define the expected 今天玩什么 options'
-  );
+  const names = data.options.map((option) => option.name);
+  for (const name of requiredNames) {
+    assert.ok(names.includes(name), `play-options.toml must include ${name}`);
+  }
 
   for (const [index, option] of data.options.entries()) {
     assert.equal(typeof option.name, 'string', `play option ${index + 1} needs a string name`);
@@ -60,6 +53,28 @@ function verifyPlayOptions() {
       'string',
       `play option ${index + 1} needs a string comment`
     );
+    if ('weight' in option) {
+      assert.equal(
+        typeof option.weight,
+        'number',
+        `play option ${index + 1} weight must be a number`
+      );
+      assert.ok(option.weight > 0, `play option ${index + 1} weight must be positive`);
+    }
+    if ('artist' in option) {
+      assert.equal(
+        typeof option.artist,
+        'string',
+        `play option ${index + 1} artist must be a string`
+      );
+    }
+    if ('artist_link' in option) {
+      assert.equal(
+        typeof option.artist_link,
+        'string',
+        `play option ${index + 1} artist_link must be a string`
+      );
+    }
   }
 }
 

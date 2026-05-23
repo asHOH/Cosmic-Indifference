@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
+import { parse } from 'smol-toml';
 import ts from 'typescript';
 
 async function loadImagePaths() {
@@ -15,20 +16,47 @@ async function loadImagePaths() {
   return import(`data:text/javascript;base64,${Buffer.from(outputText).toString('base64')}`);
 }
 
-test('play option data defines the five 今天玩什么 results with comments', async () => {
+test('play option data includes the base 今天玩什么 results with valid roll fields', async () => {
   const source = await readFile(new URL('../src/data/play-options.toml', import.meta.url), 'utf8');
+  const data = parse(source);
 
-  const expected = [
-    ['战士', '今天适合正面开战。'],
-    ['猎人', '今天适合耐心瞄准。'],
-    ['储君', '今天适合稳坐王座。'],
-    ['骨姐', '今天适合优雅收割。'],
-    ['机宝', '今天适合启动机宝模式。'],
-  ];
+  assert.ok(Array.isArray(data.options));
 
-  for (const [name, comment] of expected) {
-    assert.match(source, new RegExp(`name = "${name}"`));
-    assert.match(source, new RegExp(`comment = "${comment}"`));
+  const names = data.options.map((option) => option.name);
+  for (const name of ['战士', '猎人', '储君', '骨姐', '机宝']) {
+    assert.ok(names.includes(name), `play options should include ${name}`);
+  }
+
+  for (const [index, option] of data.options.entries()) {
+    assert.equal(typeof option.name, 'string', `play option ${index + 1} needs a string name`);
+    assert.equal(typeof option.color, 'string', `play option ${index + 1} needs a string color`);
+    assert.equal(
+      typeof option.comment,
+      'string',
+      `play option ${index + 1} needs a string comment`
+    );
+    if ('weight' in option) {
+      assert.equal(
+        typeof option.weight,
+        'number',
+        `play option ${index + 1} weight must be number`
+      );
+      assert.ok(option.weight > 0, `play option ${index + 1} weight must be positive`);
+    }
+    if ('artist' in option) {
+      assert.equal(
+        typeof option.artist,
+        'string',
+        `play option ${index + 1} artist must be string`
+      );
+    }
+    if ('artist_link' in option) {
+      assert.equal(
+        typeof option.artist_link,
+        'string',
+        `play option ${index + 1} artist_link must be string`
+      );
+    }
   }
 });
 

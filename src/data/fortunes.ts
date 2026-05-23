@@ -21,8 +21,8 @@ function parseFortune(value: unknown, index: number): Fortune {
     throw new Error(`Fortune ${index + 1} must define a string color`);
   }
 
-  if (value.comment !== undefined && typeof value.comment !== 'string') {
-    throw new Error(`Fortune ${index + 1} comment must be a string`);
+  if (typeof value.comment !== 'string') {
+    throw new Error(`Fortune ${index + 1} must define a string comment`);
   }
 
   if (value.artist !== undefined && typeof value.artist !== 'string') {

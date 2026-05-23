@@ -33,10 +33,25 @@ test('fortune parser accepts optional artist credit fields', async () => {
     [[fortunes]]
     name = "超超超大吉"
     color = "#ff4d4f"
+    comment = "今天也要有评论"
     artist = "笨蛋芷荧"
     artist_link = "https://space.bilibili.com/1708779209"
   `);
 
   assert.equal(fortunes[0].artist, '笨蛋芷荧');
   assert.equal(fortunes[0].artist_link, 'https://space.bilibili.com/1708779209');
+});
+
+test('fortune parser requires a string comment', async () => {
+  const { parseFortunesToml } = await loadFortunesModule();
+
+  assert.throws(
+    () =>
+      parseFortunesToml(`
+        [[fortunes]]
+        name = "超超超大吉"
+        color = "#ff4d4f"
+      `),
+    /Fortune 1 must define a string comment/
+  );
 });
