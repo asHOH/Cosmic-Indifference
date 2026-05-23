@@ -1,70 +1,14 @@
-import { parse } from 'smol-toml';
 import fortunesSource from './fortunes.toml?raw';
-import type { RollResultEntry } from './roll-result-entry';
+import { parseRollResultToml, type RollResultEntry } from './roll-result-entry';
 
 export type Fortune = RollResultEntry;
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null;
-}
-
-function parseFortune(value: unknown, index: number): Fortune {
-  if (!isRecord(value)) {
-    throw new Error(`Fortune ${index + 1} must be a table`);
-  }
-
-  if (typeof value.name !== 'string') {
-    throw new Error(`Fortune ${index + 1} must define a string name`);
-  }
-
-  if (typeof value.color !== 'string') {
-    throw new Error(`Fortune ${index + 1} must define a string color`);
-  }
-
-  if (typeof value.comment !== 'string') {
-    throw new Error(`Fortune ${index + 1} must define a string comment`);
-  }
-
-  if (value.artist !== undefined && typeof value.artist !== 'string') {
-    throw new Error(`Fortune ${index + 1} artist must be a string`);
-  }
-
-  if (value.artist_link !== undefined && typeof value.artist_link !== 'string') {
-    throw new Error(`Fortune ${index + 1} artist_link must be a string`);
-  }
-
-  if (value.weight !== undefined) {
-    if (typeof value.weight !== 'number' || value.weight <= 0) {
-      throw new Error(`Fortune ${index + 1} weight must be a positive number`);
-    }
-
-    return {
-      name: value.name,
-      color: value.color,
-      comment: value.comment,
-      artist: value.artist,
-      artist_link: value.artist_link,
-      weight: value.weight,
-    };
-  }
-
-  return {
-    name: value.name,
-    color: value.color,
-    comment: value.comment,
-    artist: value.artist,
-    artist_link: value.artist_link,
-  };
-}
-
 export function parseFortunesToml(source: string): Fortune[] {
-  const data = parse(source);
-
-  if (!isRecord(data) || !Array.isArray(data.fortunes)) {
-    throw new Error('fortunes.toml must contain [[fortunes]] entries');
-  }
-
-  return data.fortunes.map(parseFortune);
+  return parseRollResultToml(source, {
+    rootKey: 'fortunes',
+    sourceName: 'fortunes.toml',
+    entryLabel: 'Fortune',
+  });
 }
 
 export const fortunes = parseFortunesToml(fortunesSource);

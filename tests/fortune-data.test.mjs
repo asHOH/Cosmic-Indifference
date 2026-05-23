@@ -6,12 +6,20 @@ import { pathToFileURL } from 'node:url';
 import ts from 'typescript';
 
 async function loadFortunesModule() {
-  const source = await readFile(new URL('../src/data/fortunes.ts', import.meta.url), 'utf8');
+  const rollResultSource = await readFile(
+    new URL('../src/data/roll-result-entry.ts', import.meta.url),
+    'utf8'
+  );
+  const fortunesSource = await readFile(
+    new URL('../src/data/fortunes.ts', import.meta.url),
+    'utf8'
+  );
   const require = createRequire(import.meta.url);
   const smolTomlUrl = pathToFileURL(require.resolve('smol-toml')).href;
-  const testableSource = source
+  const testableSource = `${rollResultSource}\n${fortunesSource}`
     .replace("import { parse } from 'smol-toml';", `import { parse } from '${smolTomlUrl}';`)
     .replace("import fortunesSource from './fortunes.toml?raw';", "const fortunesSource = '';")
+    .replace("import { parseRollResultToml, type RollResultEntry } from './roll-result-entry';", '')
     .replace(
       'export const fortunes = parseFortunesToml(fortunesSource);',
       'export const fortunes = [];'
