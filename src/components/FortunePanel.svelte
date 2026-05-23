@@ -1,7 +1,7 @@
 <script lang="ts">
   import RollResultPanel from './RollResultPanel.svelte';
-  import { fortuneImagePath } from '../data/fortune-images';
   import { fortunes } from '../data/fortunes';
+  import { fortuneImagePath } from '../data/image-paths';
 
   type FortuneTiming = {
     ROLL_INTERVAL_MS: number;

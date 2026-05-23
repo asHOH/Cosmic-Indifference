@@ -3,8 +3,8 @@ import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import ts from 'typescript';
 
-async function loadFortuneImages() {
-  const source = await readFile(new URL('../src/data/fortune-images.ts', import.meta.url), 'utf8');
+async function loadImagePaths() {
+  const source = await readFile(new URL('../src/data/image-paths.ts', import.meta.url), 'utf8');
   const { outputText } = ts.transpileModule(source, {
     compilerOptions: {
       module: ts.ModuleKind.ESNext,
@@ -16,7 +16,7 @@ async function loadFortuneImages() {
 }
 
 test('fortune image path is derived from the fortune name', async () => {
-  const { fortuneImagePath } = await loadFortuneImages();
+  const { fortuneImagePath } = await loadImagePaths();
 
   assert.equal(fortuneImagePath('开心小花'), '/fortunes/%E5%BC%80%E5%BF%83%E5%B0%8F%E8%8A%B1.webp');
 });

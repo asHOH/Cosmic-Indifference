@@ -3,11 +3,8 @@ import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import ts from 'typescript';
 
-async function loadPlayOptionImages() {
-  const source = await readFile(
-    new URL('../src/data/play-option-images.ts', import.meta.url),
-    'utf8'
-  );
+async function loadImagePaths() {
+  const source = await readFile(new URL('../src/data/image-paths.ts', import.meta.url), 'utf8');
   const { outputText } = ts.transpileModule(source, {
     compilerOptions: {
       module: ts.ModuleKind.ESNext,
@@ -36,7 +33,7 @@ test('play option data defines the five 今天玩什么 results with comments', 
 });
 
 test('play option image path is separate from fortune images', async () => {
-  const { playOptionImagePath } = await loadPlayOptionImages();
+  const { playOptionImagePath } = await loadImagePaths();
 
   assert.equal(playOptionImagePath('战士'), '/play-options/%E6%88%98%E5%A3%AB.webp');
 });

@@ -1,6 +1,6 @@
 <script lang="ts">
   import RollResultPanel from './RollResultPanel.svelte';
-  import { playOptionImagePath } from '../data/play-option-images';
+  import { playOptionImagePath } from '../data/image-paths';
   import { playOptions } from '../data/play-options';
 
   type FortuneTiming = {
