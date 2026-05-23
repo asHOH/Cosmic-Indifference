@@ -141,6 +141,8 @@ comment = "要像小花一样开开心心呀!"
 name = "相信着你"
 color = "#bbbbbb"
 comment = "相信你今天一定万事顺遂!"
+artist = "池择雪"
+artist_link = "https://space.bilibili.com/179800906"
 
 [[fortunes]]
 name = "深谋远虑"

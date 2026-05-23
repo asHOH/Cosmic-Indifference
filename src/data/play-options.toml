@@ -2,23 +2,39 @@
 name = "战士"
 color = "#ff5555"
 comment = "今天适合正面开战。"
+artist = "蛞蝓仔仔"
+artist_link = "https://space.bilibili.com/6487305"
 
 [[options]]
 name = "猎人"
 color = "#00dd11"
 comment = ".................."
+artist = "蛞蝓仔仔"
+artist_link = "https://space.bilibili.com/6487305"
 
 [[options]]
 name = "储君"
 color = "#ff7711"
 comment = "我进塔！！！"
+artist = "不夜海没风"
+artist_link = "https://space.bilibili.com/194689445"
 
 [[options]]
 name = "骨姐"
 color = "#cc44dd"
-comment = "今天适合优雅收割。"
+comment = "要照顾好奥斯提哦~"
+artist = "摸摸头不摸头"
+artist_link = "https://space.bilibili.com/506606345"
 
 [[options]]
 name = "机宝"
 color = "#44bbff"
-comment = "今天适合启动机宝模式。"
+comment = "在启动了 在启动"
+
+[[options]]
+name = "储君的仆从"
+color = "#ff7711"
+comment = "我进塔！！！"
+weight = 0.01
+artist = "不夜海没风"
+artist_link = "https://space.bilibili.com/194689445"
