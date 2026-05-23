@@ -1,11 +1,15 @@
 import assert from 'node:assert/strict';
-import { mkdir, mkdtemp, rm, stat, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readdir, rm, stat, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
 import sharp from 'sharp';
 
-import { preprocessFortuneImages } from '../scripts/preprocess-fortune-images.mjs';
+import {
+  parseOptions,
+  preprocessConfiguredImageFolders,
+  preprocessFortuneImages,
+} from '../scripts/preprocess-fortune-images.mjs';
 
 test('preprocesses transparent PNG fortune images to bounded lossy WebP files', async () => {
   const root = await mkdtemp(path.join(tmpdir(), 'fortune-images-'));
@@ -137,4 +141,70 @@ test('generates derived fortune images from 凶 transforms', async () => {
     sharp.cache(false);
     await rm(root, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
   }
+});
+
+test('default image pipeline processes named PNGs from category folders', async () => {
+  const root = await mkdtemp(path.join(tmpdir(), 'named-image-folders-'));
+  const fortuneSourceDir = path.join(root, 'assets', 'source', 'fortunes');
+  const playSourceDir = path.join(root, 'assets', 'source', 'play-options');
+
+  try {
+    await mkdir(fortuneSourceDir, { recursive: true });
+    await mkdir(playSourceDir, { recursive: true });
+
+    await sharp({
+      create: {
+        width: 24,
+        height: 24,
+        channels: 4,
+        background: { r: 255, g: 80, b: 80, alpha: 0.85 },
+      },
+    })
+      .png()
+      .toFile(path.join(fortuneSourceDir, '吉.png'));
+
+    await sharp({
+      create: {
+        width: 20,
+        height: 28,
+        channels: 4,
+        background: { r: 80, g: 220, b: 180, alpha: 0.85 },
+      },
+    })
+      .png()
+      .toFile(path.join(playSourceDir, '战士.png'));
+
+    const options = parseOptions(['--max', '16'], root);
+    const outputs = await preprocessConfiguredImageFolders(options);
+
+    assert.deepEqual(
+      outputs.map((output) => path.relative(root, output.outputPath).replaceAll(path.sep, '/')),
+      ['public/fortunes/吉.webp', 'public/play-options/战士.webp']
+    );
+    assert.deepEqual(await readdir(path.join(root, 'public', 'fortunes')), ['吉.webp']);
+    assert.deepEqual(await readdir(path.join(root, 'public', 'play-options')), ['战士.webp']);
+  } finally {
+    sharp.cache(false);
+    await rm(root, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
+  }
+});
+
+test('can select only the play option image folder from the CLI options', () => {
+  const root = path.resolve('example-root');
+  const options = parseOptions(['--group', 'play-options'], root);
+
+  assert.deepEqual(
+    options.folders.map((folder) => ({
+      id: folder.id,
+      sourceDir: path.relative(root, folder.sourceDir).replaceAll(path.sep, '/'),
+      outputDir: path.relative(root, folder.outputDir).replaceAll(path.sep, '/'),
+    })),
+    [
+      {
+        id: 'play-options',
+        sourceDir: 'assets/source/play-options',
+        outputDir: 'public/play-options',
+      },
+    ]
+  );
 });

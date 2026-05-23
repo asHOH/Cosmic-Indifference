@@ -6,8 +6,6 @@ import sharp from 'sharp';
 const DEFAULT_MAX_DIMENSION = 640;
 const DEFAULT_QUALITY = 76;
 const DEFAULT_ALPHA_QUALITY = 82;
-const DEFAULT_SOURCE_DIR = 'assets/source';
-const DEFAULT_OUTPUT_DIR = 'public/fortunes';
 const DERIVED_FORTUNE_IMAGES = [
   {
     sourceName: '凶',
@@ -23,6 +21,20 @@ const DERIVED_FORTUNE_IMAGES = [
     sourceName: '凶',
     targetName: '区',
     transform: { type: 'rotate', value: 90 },
+  },
+];
+const DEFAULT_IMAGE_FOLDERS = [
+  {
+    id: 'fortunes',
+    sourceDir: 'assets/source/fortunes',
+    outputDir: 'public/fortunes',
+    derivedImages: DERIVED_FORTUNE_IMAGES,
+  },
+  {
+    id: 'play-options',
+    sourceDir: 'assets/source/play-options',
+    outputDir: 'public/play-options',
+    derivedImages: [],
   },
 ];
 
@@ -128,15 +140,13 @@ async function writeWebpImage({
 }
 
 export function parseOptions(args = process.argv.slice(2), cwd = process.cwd()) {
-  const sourceDir = readArgValue(args, '--source') ?? DEFAULT_SOURCE_DIR;
-  const outputDir = readArgValue(args, '--out') ?? DEFAULT_OUTPUT_DIR;
+  const sourceDir = readArgValue(args, '--source');
+  const outputDir = readArgValue(args, '--out');
+  const group = readArgValue(args, '--group') ?? 'all';
   const maxDimension = readArgValue(args, '--max');
   const quality = readArgValue(args, '--quality');
   const alphaQuality = readArgValue(args, '--alpha-quality');
-
-  return {
-    sourceDir: path.resolve(cwd, sourceDir),
-    outputDir: path.resolve(cwd, outputDir),
+  const commonOptions = {
     maxDimension: maxDimension
       ? parsePositiveInteger(maxDimension, '--max')
       : DEFAULT_MAX_DIMENSION,
@@ -145,11 +155,46 @@ export function parseOptions(args = process.argv.slice(2), cwd = process.cwd()) 
       ? parsePositiveInteger(alphaQuality, '--alpha-quality')
       : DEFAULT_ALPHA_QUALITY,
   };
+
+  if (sourceDir || outputDir) {
+    return {
+      folders: [
+        {
+          id: 'custom',
+          sourceDir: path.resolve(cwd, sourceDir ?? 'assets/source/fortunes'),
+          outputDir: path.resolve(cwd, outputDir ?? 'public/fortunes'),
+          derivedImages: DERIVED_FORTUNE_IMAGES,
+        },
+      ],
+      ...commonOptions,
+    };
+  }
+
+  const folders =
+    group === 'all'
+      ? DEFAULT_IMAGE_FOLDERS
+      : DEFAULT_IMAGE_FOLDERS.filter((folder) => folder.id === group);
+
+  if (folders.length === 0) {
+    throw new Error(
+      `--group must be one of: all, ${DEFAULT_IMAGE_FOLDERS.map((folder) => folder.id).join(', ')}`
+    );
+  }
+
+  return {
+    folders: folders.map((folder) => ({
+      ...folder,
+      sourceDir: path.resolve(cwd, folder.sourceDir),
+      outputDir: path.resolve(cwd, folder.outputDir),
+    })),
+    ...commonOptions,
+  };
 }
 
-export async function preprocessFortuneImages({
+async function preprocessNamedImages({
   sourceDir,
   outputDir,
+  derivedImages = [],
   maxDimension = DEFAULT_MAX_DIMENSION,
   quality = DEFAULT_QUALITY,
   alphaQuality = DEFAULT_ALPHA_QUALITY,
@@ -189,12 +234,12 @@ export async function preprocessFortuneImages({
       })
     );
 
-    const derivedImages = DERIVED_FORTUNE_IMAGES.filter(
+    const derivedImagesForSource = derivedImages.filter(
       (derivedImage) =>
         derivedImage.sourceName === sourceName && !sourceNames.has(derivedImage.targetName)
     );
 
-    for (const derivedImage of derivedImages) {
+    for (const derivedImage of derivedImagesForSource) {
       const derivedFileName = `${derivedImage.targetName}.webp`;
       const derivedOutputPath = path.join(outputDir, derivedFileName);
       const imageBuffer = await transformImage(normalizedImage, derivedImage.transform);
@@ -216,6 +261,40 @@ export async function preprocessFortuneImages({
   return outputs;
 }
 
+export async function preprocessFortuneImages(options = {}) {
+  return preprocessNamedImages({
+    ...options,
+    derivedImages: options.derivedImages ?? DERIVED_FORTUNE_IMAGES,
+  });
+}
+
+export async function preprocessConfiguredImageFolders({
+  folders,
+  maxDimension = DEFAULT_MAX_DIMENSION,
+  quality = DEFAULT_QUALITY,
+  alphaQuality = DEFAULT_ALPHA_QUALITY,
+} = {}) {
+  if (!Array.isArray(folders)) throw new Error('folders must be an array');
+
+  const outputs = [];
+
+  for (const folder of folders) {
+    await mkdir(folder.sourceDir, { recursive: true });
+    outputs.push(
+      ...(await preprocessNamedImages({
+        sourceDir: folder.sourceDir,
+        outputDir: folder.outputDir,
+        derivedImages: folder.derivedImages,
+        maxDimension,
+        quality,
+        alphaQuality,
+      }))
+    );
+  }
+
+  return outputs;
+}
+
 function formatBytes(bytes) {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
@@ -224,10 +303,10 @@ function formatBytes(bytes) {
 
 async function main() {
   const options = parseOptions();
-  const outputs = await preprocessFortuneImages(options);
+  const outputs = await preprocessConfiguredImageFolders(options);
 
   if (outputs.length === 0) {
-    console.log(`No PNG files found in ${options.sourceDir}`);
+    console.log('No PNG files found in configured source folders');
     return;
   }
 
