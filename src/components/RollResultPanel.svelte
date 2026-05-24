@@ -95,7 +95,7 @@
 </script>
 
 <div
-  class="fortune-shell relative z-20 flex flex-col items-center justify-center space-y-8"
+  class="fortune-shell relative z-20 flex flex-col items-center justify-center gap-8"
   class:reveal-layout={state === 'Revealed'}
   style="--result-accent: {accentColor}; --final-fortune-animation-ms: {timing.FINAL_FORTUNE_ANIMATION_MS}ms; --fortune-lift-ms: {timing.FORTUNE_LIFT_MS}ms"
 >
