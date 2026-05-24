@@ -15,6 +15,10 @@
 
 如有侵权请联系作者删除相关素材。
 
+## 许可证
+
+代码使用 [MIT License](LICENSE)。视频、图片、角色美术、音乐、歌词等素材版权归各自创作者所有。
+
 ## 开发本项目
 
 Astro + Svelte 静态站点。数据在 `src/data/*.toml`，UI 在 `src/components/CosmicApp.svelte`。
