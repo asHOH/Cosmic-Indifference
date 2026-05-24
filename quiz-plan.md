@@ -4,7 +4,7 @@
 
 ## UI
 
-Add a second app mode named `测试：宇宙冷漠`, parallel to the initial `今日运势` mode. A fixed borderless icon button toggles between the fortune and quiz modes. The toggle hides itself if one clicks the `占卜` button at `今日运势` mode or `我有所了解` (start the quiz) in this mode.
+Add a second app mode named `测验：宇宙冷漠`, parallel to the initial `今日运势` mode. A fixed borderless icon button toggles between the fortune and quiz modes. The toggle hides itself if one clicks the `占卜` button at `今日运势` mode or `我有所了解` (start the quiz) in this mode.
 
 During the quiz, show one question at a time with progress, score, and four answer buttons. Long-press an answer button for ~500ms to confirm selection; show an easing progress bar on the button background during the long press. After confirmation, advance to the next question.
 

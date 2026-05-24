@@ -4,7 +4,7 @@ export type AppMode = (typeof appModes)[number];
 
 export const nextModeLabels: Record<AppMode, string> = {
   fortune: '切换到今天玩什么',
-  play: '切换到测试',
+  play: '切换到测验',
   quiz: '切换到今日运势',
 };
 

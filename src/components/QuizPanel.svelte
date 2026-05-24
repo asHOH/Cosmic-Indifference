@@ -226,7 +226,7 @@
   style="--hold-confirm-ms: {HOLD_CONFIRM_MS}ms"
 >
   {#if state === 'Idle'}
-    <h1 class="quiz-title text-5xl font-bold tracking-widest">测试：宇宙冷漠</h1>
+    <h1 class="quiz-title text-5xl font-bold tracking-widest">测验：宇宙冷漠</h1>
 
     <div class="quiz-stage flex min-h-52 flex-col items-center justify-center"></div>
 

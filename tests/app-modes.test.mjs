@@ -28,6 +28,6 @@ test('mode toggle labels describe the next destination', async () => {
   const { nextModeLabels } = await loadAppModes();
 
   assert.equal(nextModeLabels.fortune, '切换到今天玩什么');
-  assert.equal(nextModeLabels.play, '切换到测试');
+  assert.equal(nextModeLabels.play, '切换到测验');
   assert.equal(nextModeLabels.quiz, '切换到今日运势');
 });
