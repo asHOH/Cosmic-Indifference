@@ -1,70 +1,81 @@
-# Quiz Plan: for the song 宇宙冷漠
+# Completed Quiz Spec: 宇宙冷漠
 
-10 multiple-choice questions, 10 points each. Each question has 4 answer options (A-D) and exactly one correct answer.
+Status: completed and implemented in the current codebase.
 
 ## UI
 
-Add a second app mode named `测验：宇宙冷漠`, parallel to the initial `今日运势` mode. A fixed borderless icon button toggles between the fortune and quiz modes. The toggle hides itself if one clicks the `占卜` button at `今日运势` mode or `我有所了解` (start the quiz) in this mode.
+`QuizPanel.svelte` implements a 10-question multiple-choice quiz worth 10 points per question.
 
-During the quiz, show one question at a time with progress, score, and four answer buttons. Long-press an answer button for ~500ms to confirm selection; show an easing progress bar on the button background during the long press. After confirmation, advance to the next question.
+- Idle state title: `测验：宇宙冷漠`.
+- Start button: `我有所了解`.
+- Each question shows progress and four answer buttons.
+- Answers are confirmed by holding for 500ms; the selected button fills while held.
+- After confirmation, the quiz waits 700ms and advances.
+- After question 10, the result screen shows score, badge, random comment, and celebration.
+- The advance button appears after 1.5s and fades the app into the shared video flow.
+- In dev mode, `Debug Perfect` previews the perfect-score result.
 
-After the quiz, show the score, result badge, and a random comment from `src/data/quiz-result-comments.toml`. Result badges:
+## Results
 
-- 0-50: 💩
-- 60: 👍
-- 70: bronze trophy
-- 80: silver trophy
-- 90: gold trophy
-- 100: diamond trophy
+Result comments come from `src/data/quiz-result-comments.toml` through `src/data/quiz-result-comments.ts`.
 
-The random comment is selected from the corresponding score bucket: `0-50`, `60`, `70`, `80`, `90`, or `100`.
+Score buckets:
 
-Scores 60-99 get a modest celebration effect. A perfect score gets an extremely exaggerated and crazy celebration effect (this is intentional).
+- `0-50`
+- `60`
+- `70`
+- `80`
+- `90`
+- `100`
 
-After showing the result for ~1.5s, show a right-arrow advance button.
+Badges:
 
-After pressing this button, the UI fades, and like what happens in the fortune app, the `宇宙冷漠` video plays and fades in. Reuse the fortune app's video transition timings.
+- 0-50: `💩`
+- 60: `👍`
+- 70-100: trophy with bronze/silver/gold/perfect styling
+
+Scores 60-99 get a modest particle celebration. A perfect score gets the exaggerated perfect-score effect.
 
 ## Data
 
-`src/data/quiz-result-comments.toml` contains quiz result comments grouped by score bucket. `src/data/quiz-result-comments.ts` parses and validates it for the app.
+Quiz source files:
 
-`src/data/lyrics.txt` contains one lyric line per non-empty line.
+- `src/data/lyrics.txt`
+- `src/data/lyric-distractors.txt`
+- `src/data/quiz-generator.ts`
+- `src/data/quiz.ts`
 
-- Trailing `*`: sung by Kakaa (咔咔), not Cainonglaila (菜农来辣). Strip before display/comparison.
-- Trailing `~`: background-ish interjection, not an official lyric. Do not strip.
+Lyrics rules:
 
-`src/data/lyric-distractors.txt` aligns 1:1 with `lyrics.txt`.
+- One non-empty lyric line per row.
+- Trailing `*` marks a Kakaa line and is stripped for display/comparison.
+- Trailing `~` marks a background/interjection line and is kept in the displayed text.
 
-- `-`: this lyric line cannot be a quiz target.
-- Number only: reuse distractors from that 1-based lyric line.
-- Otherwise: comma-separated distractors for this lyric line.
-- Distractor variants use `{a/b}` fields. Example: `{a/b}c{d/e/f}` has 6 variants.
-- Pick a distractor by weight `2 + field_count`, then pick each variant option uniformly.
-- Regenerate if the final distractor exactly matches the correct answer.
+Distractor rules:
 
-## Question Selection and Answer Options
+- `lyric-distractors.txt` aligns 1:1 with `lyrics.txt`.
+- `-` marks a lyric line as unavailable as a normal target.
+- A number reuses distractors from that 1-based lyric line.
+- Otherwise the row is a comma-separated list of distractor templates.
+- `{a/b}` template fields are rendered randomly.
+- Template weight is `2 + field_count`.
+- Generated distractors cannot exactly match the correct answer or `宇宙冷漠`.
 
-### Questions 1-9
+## Question Generation
 
-Test lyric memory. Pick a random target lyric line, then ask one valid pattern:
+`generateQuiz()` creates 9 lyric-memory questions plus 1 special question.
 
-1. `"“宇宙冷漠”这首歌的{第一句/最后一句}歌词是什么？"`: only for the first/last lyric line.
-2. `"[lyric]的{上/下}一句歌词是什么？"`: omit `~` lines; the prompt lyric must identify a unique position.
+Lyric questions:
 
-For pattern 2, if the prompt line is not unique, add one more neighboring context line (For 下一句 prompts, add previous context; for 上一句 prompts, add next context). If the target is too close to the start/end to do that, switch direction.
+- Target official, non-background lyric lines.
+- May ask for the first line, last line, previous line, or next line.
+- Duplicate prompt lines get neighboring context when needed.
+- Option A is always `宇宙冷漠`; it can be correct.
+- If `宇宙冷漠` is not correct, the correct answer is shuffled into B-D with two matching distractors or two random lyric lines.
 
-- Option A is always `"宇宙冷漠"` as intentional joke behavior; it may be correct.
-- If A is correct, B-D are 3 random non-repeating lyric lines.
-- Otherwise, B-D contain the correct answer plus either 2 matching distractors or 2 random non-repeating lyric lines. Do not mix one distractor with one random lyric line.
-- Always preserve exactly one correct option and shuffle option B-D.
+Special question 10:
 
-### Question 10
-
-Chooses one special pattern with equal probability:
-
-1. `"以下哪一句歌词是由咔咔唱的？"`: correct option is a random Kakaa-sung line; distractors are 3 non-`~` non-Kakaa lines.
-2. `"以下哪一句歌词的{上/下}一句是“{芜~/嘎嘎嘎~}”？"`: choose marker (`芜~` or `嘎嘎嘎~`) and direction (`上` or `下`). Correct option is a random non-`~` line whose previous/next line exactly matches the marker; distractors are non-`~` lines that do not match that marker/direction. If that line is not unique, add one more neighboring context line. For marker `芜~`, exclude lines previous/next to `芜（轻）~` from distractors to avoid near-correct answers.
-
-- Do not enforce option A to `"宇宙冷漠"` for this question.
-- Always preserve exactly one correct option and shuffle the options.
+- Either asks which line Kakaa sings.
+- Or asks which line is adjacent to `芜~` or `嘎嘎嘎~`.
+- Does not force option A to `宇宙冷漠`.
+- Options are shuffled while preserving exactly one correct answer.

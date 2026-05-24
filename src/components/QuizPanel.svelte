@@ -207,7 +207,7 @@
     if (value >= 80) return { text: '🏆', className: 'silver' };
     if (value >= 70) return { text: '🏆', className: 'bronze' };
     if (value >= 60) return { text: '👍', className: 'thumb' };
-    return { text: '💬', className: 'comment' };
+    return { text: '💩', className: 'comment' };
   }
 
   async function advanceAfterQuiz() {

@@ -1,27 +1,21 @@
-# 宇宙冷漠 (Cosmic Indifference)
+# 宇宙冷漠
 
-🌍 **Live Demo:** [https://www.yuzhoulengmo.com](https://www.yuzhoulengmo.com)
+一个小网页：今日运势、今天玩什么、歌词测验。
 
-## 📖 Project Overview
+网址：<https://www.yuzhoulengmo.com>
 
-This project is a random fortune generator, but its true function is to seamlessly play the Bilibili video "宇宙冷漠" upon interaction.
+欢迎任何建议~
 
-## 🚀 Tech Stack
+## 开发本项目
 
-- **Framework:** [Astro](https://astro.build) (Static Site Generation)
-- **Interactivity:** [Svelte](https://svelte.dev)
-- **Video Delivery:** Bilibili Invisible Iframe Buffering
-- **Deployment:** Tencent Cloud COS (Hong Kong)
+Astro + Svelte 静态站点。数据在 `src/data/*.toml`，UI 在 `src/components/CosmicApp.svelte`。
 
-For detailed project specifications, UX flow, and deployment strategies, please refer to [plan.md](plan.md).
+```bash
+npm install
+npm run dev
+npm run build
+```
 
-## 🧞 Commands
+已完成的计划：[plan.md](plan.md)、[quiz-plan.md](quiz-plan.md)。
 
-All commands are run from the root of the project, from a terminal:
-
-| Command           | Action                                       |
-| :---------------- | :------------------------------------------- |
-| `npm install`     | Installs dependencies                        |
-| `npm run dev`     | Starts local dev server at `localhost:4321`  |
-| `npm run build`   | Build your production site to `./dist/`      |
-| `npm run preview` | Preview your build locally, before deploying |
+本项目主要由AI完成，代码质量捉急，见谅。

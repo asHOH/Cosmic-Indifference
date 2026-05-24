@@ -1,52 +1,40 @@
-# Project Plan: 宇宙冷漠
+# Completed Project Spec: 宇宙冷漠
 
-## 0. Project Metadata
+Status: completed and implemented in the current codebase.
 
-- **Target Audience:** Mainland China users.
-- **Regulatory Status:** No ICP filing.
-- **Official Domain:** [https://www.yuzhoulengmo.com](https://www.yuzhoulengmo.com)
-- **Deployment Endpoint:** Tencent Cloud COS Hong Kong
-- **Required GitHub Secrets for Deployment:** `TENCENT_COS_SECRET_ID`, `TENCENT_COS_SECRET_KEY`, `TENCENT_COS_BUCKET` (e.g., `my-website-1250000000`), `TENCENT_COS_REGION` (e.g., `ap-hongkong`)
-- **Video Source:** Local Asset (MP4, WebM)
+## Product
 
-## 1. Product Overview
+`宇宙冷漠` is a static Astro + Svelte app with three interactive modes:
 
-- **Hook:** A "Daily Fortune" (今日运势) interactive web page.
-- **Punchline:** Regardless of result, it triggers the "宇宙冷漠" video.
-- **Secondary Function:** A lyric/singer multiple-choice quiz for "宇宙冷漠"; detailed rules live in `quiz-plan.md`.
-- **Vibe:** Minimalist and smooth.
+- `今日运势`: weighted fortune roll from `src/data/fortunes.toml`.
+- `今天玩什么`: weighted play-option roll from `src/data/play-options.toml`.
+- `测验：宇宙冷漠`: lyric quiz; completed details live in `quiz-plan.md`.
 
-## 2. UX/UI Spec
+All modes lead into the same local `宇宙冷漠` video playback.
 
-- **Phase 1: Setup**
-  - UI exclusively displays the Fortune Generator.
-  - Video preloads but is completely hidden.
-- **Phase 2: Interaction**
-  - User clicks "Roll Fortune".
-  - A rolling animation plays.
-  - A random fortune is presented along with image and comment.
-- **Phase 3: Transition**
-  - A pause for reading the fortune.
-  - The Fortune UI fades out.
-  - The "宇宙冷漠" video fades in, taking over.
+## UI Flow
 
-## 3. Video Delivery
+- `src/components/CosmicApp.svelte` owns mode switching, video arming, and playback.
+- `ModeToggle.svelte` cycles `fortune -> play -> quiz -> fortune` while the app is still interactive.
+- `FortunePanel.svelte` and `PlayPanel.svelte` reuse `RollResultPanel.svelte`.
+- Starting any mode hides the mode toggle and prewarms the video after user interaction.
+- Roll modes animate through weighted entries, reveal an image/comment, then fade to the video.
+- Quiz mode starts from `我有所了解`, runs the quiz, shows a result, then advances to the video.
 
-### The Solution: HTML5 `<video>`
+## Assets And Data
 
-- **Target Resolution:** The 3-minute video is compressed to 360p (WebM or MP4/H.264) using `ffmpeg` to ~8MB.
+- Video files are local HTML5 sources:
+  - `public/yuzhoulengmo_360p.webm`
+  - `public/yuzhoulengmo_360p.mp4`
+- Roll result images are served from:
+  - `public/fortunes/*.webp`
+  - `public/play-options/*.webp`
+- TOML roll data is parsed by `src/data/roll-result-entry.ts`.
+- Image preprocessing commands live in `package.json`.
 
-```bash
-    ffmpeg -y -i assets/source/yuzhoulengmo.mp4 -vf scale=-2:360 -r 24 -c:v libvpx-vp9 -crf 32 -b:v 200k -row-mt 1 -c:a libopus -b:a 128k public/yuzhoulengmo_360p.webm
-    ffmpeg -y -i assets/source/yuzhoulengmo.mp4 -vf scale=-2:360 -r 24 -c:v libx264 -preset veryslow -crf 26 -c:a aac -b:a 128k -movflags +faststart public/yuzhoulengmo_360p.mp4
-```
+## Deployment
 
-### Rejected Alternatives
-
-- **HLS (HTTP Live Streaming):** Over-engineering for a ~8MB payload. `hls.js` adds time-to-first-frame latency.
-- **MPEG-DASH:** Same overhead latency/complexity as HLS, with added drawback of compatibility.
-
-## 4. Technical Architecture
-
-- **Frontend Framework:** Astro + Svelte
-- **Deployment:** Github actions deploying to static site hosting via Tencent Cloud COS (Hong Kong region, avoiding the ICP requirement).
+- Live domain: [https://www.yuzhoulengmo.com](https://www.yuzhoulengmo.com)
+- Hosting target: Tencent Cloud COS Hong Kong.
+- GitHub Actions workflow: `.github/workflows/deploy.yml`.
+- Required secrets: `TENCENT_COS_SECRET_ID`, `TENCENT_COS_SECRET_KEY`, `TENCENT_COS_BUCKET`, `TENCENT_COS_REGION`.
